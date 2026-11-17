@@ -2,7 +2,7 @@
 
 ## Red Team Engagements
 
------------------------------------ Defining Scope and Objectives -----------------------------------
+#### ----------------------------------- Defining Scope and Objectives -----------------------------------
 
 **Objectives:** What the client wants to achieve (find weaknesses, test EDR, SIEM, detection, response, and data exposure).
 
@@ -21,35 +21,33 @@
 **Remember:** Objectives = WHAT to achieve. Scope = WHAT is allowed. Plan = HOW to achieve it.
 
 
+#### ----------------------------------- Rules of Engagement -----------------------------------
 
-**Rules of Engagement (RoE):** A legally binding agreement between the client and Red Team that defines objectives, scope, rules, restrictions, and expectations.
-
-**Purpose:** Acts as the official agreement/contract before testing begins. Requires authorization from both parties.
+**Rules of Engagement (RoE):** A legally binding agreement between the client and Red Team defining objectives, scope, permissions, restrictions, and expectations.
 
 **NDA:** Non-Disclosure Agreement – keeps confidential information private.
 
 **Main RoE Sections:**
 
-**Executive Summary:** Overview of the agreement.
+| Section                  | Purpose                          |
+| ------------------------ | -------------------------------- |
+| Executive Summary        | Overall summary                  |
+| Purpose                  | Why RoE exists                   |
+| References               | Related standards (HIPAA, ISO)   |
+| Scope                    | Allowed and forbidden activities |
+| Definitions              | Technical term meanings          |
+| Rules & Support          | Both parties' responsibilities   |
+| Provisions               | Exceptions and extra conditions  |
+| Requirements & Authority | Red Team's permissions           |
+| Ground Rules             | Interaction limitations          |
+| Points of Contact        | Important contacts               |
+| Authorization            | Official permission              |
+| Approval                 | Both parties' signatures         |
+| Appendix                 | Additional information           |
 
-**Purpose & References:** Why the document exists and related standards (HIPAA, ISO).
+**Remember:** RoE is the official legal permission and rulebook for a Red Team engagement. It is only a summary; detailed engagement planning comes later.
 
-**Scope:** Allowed and forbidden activities.
+**Reference:** [Red Team RoE Template](https://redteam.guide/docs/templates/roe_template/?utm_source=chatgpt.com)
 
-**Definitions:** Meaning of technical terms.
 
-**Rules & Support:** Responsibilities of both parties.
-
-**Provisions:** Exceptions and additional conditions.
-
-**Requirements & Restrictions:** Red Team's specific permissions and limitations.
-
-**Ground Rules:** Limits on Red Team interactions.
-
-**Points of Contact:** Important people to contact during engagement.
-
-**Authorization & Approval:** Official permission and signatures from both parties.
-
-**Appendix:** Additional information.
-
-**Remember:** RoE = Official legal agreement defining what the Red Team is authorized to do and the rules they must follow.
+#### ----------------------------------- Campaign Planning -----------------------------------
