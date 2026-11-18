@@ -190,27 +190,6 @@ Operations Plan = Business/client perspective (overall operations).
 Mission Plan = Operator perspective (exact actions to perform).
 
 
-### --------------------------------- Mission Plan -----------------------------------
-
-**Mission Plan:** Cell-specific document that assigns exact actions to Red Team operators.
-
-**Main Components:**
-
-| Component                 | Purpose                            |
-| ------------------------- | ---------------------------------- |
-| Objectives                | What needs to be achieved          |
-| Operators                 | Who performs the tasks             |
-| Exploits/Attacks          | Attacks to execute                 |
-| Targets                   | Users, machines, systems           |
-| Execution Plan Variations | Alternative ways to complete tasks |
-
-**Remember:**
-
-Operations Plan = Business/client perspective (overall operations).
-
-Mission Plan = Operator perspective (exact actions to perform).
-
-
 
 
 ## Red Team Threat Intel
@@ -848,6 +827,12 @@ run
 
 Use multiple redirectors and DNS records in real engagements instead of relying on IP addresses alone.
 
+---
+---
+---
+
+
+# Initial Access
 
 ## Red Team Recon
 
