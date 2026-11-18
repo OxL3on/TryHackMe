@@ -2,7 +2,7 @@
 
 ## Red Team Engagements
 
-#### ----------------------------------- Defining Scope and Objectives -----------------------------------
+### --------------------------------- Defining Scope and Objectives -----------------------------------
 
 **Objectives:** What the client wants to achieve (find weaknesses, test EDR, SIEM, detection, response, and data exposure).
 
@@ -21,7 +21,7 @@
 **Remember:** Objectives = WHAT to achieve. Scope = WHAT is allowed. Plan = HOW to achieve it.
 
 
-#### ----------------------------------- Rules of Engagement -----------------------------------
+### --------------------------------- Rules of Engagement -----------------------------------
 
 **Rules of Engagement (RoE):** A legally binding agreement between the client and Red Team defining objectives, scope, permissions, restrictions, and expectations.
 
@@ -50,7 +50,7 @@
 **Reference:** [Red Team RoE Template](https://redteam.guide/docs/templates/roe_template/?utm_source=chatgpt.com)
 
 
-#### ----------------------------------- Campaign Planning -----------------------------------
+### --------------------------------- Campaign Planning -----------------------------------
 
 **Campaign Planning:** Uses client objectives and RoE to decide what the Red Team will do and how they will do it.
 
@@ -72,18 +72,18 @@
 **Remember:** Engagement = Overall plan. Operations = Detailed plan. Mission = Exact execution. Remediation = After the campaign.
 
 
-#### ----------------------------------- Engagement Documentation -----------------------------------
+### --------------------------------- Engagement Documentation -----------------------------------
 
 **Engagement Documentation:** Officially records campaign planning. It can be a formal document or even a simple email.
 
-### **Engagement Plan**
+#### **Engagement Plan**
 
 | Component     | Purpose                                                     |
 | ------------- | ----------------------------------------------------------- |
 | CONOPS        | Non-technical overview of how Red Team achieves objectives. |
 | Resource Plan | Timeline, personnel, hardware, cloud requirements.          |
 
-### **Operations Plan**
+#### **Operations Plan**
 
 | Component              | Purpose                              |
 | ---------------------- | ------------------------------------ |
@@ -92,7 +92,7 @@
 | RoE (Optional)         | Rules of Engagement.                 |
 | Technical Requirements | Knowledge needed by Red Team.        |
 
-### **Mission Plan**
+#### **Mission Plan**
 
 | Component                    | Purpose                                   |
 | ---------------------------- | ----------------------------------------- |
@@ -100,7 +100,7 @@
 | Execution Times              | When to start each stage.                 |
 | Responsibilities/Roles       | Who does what and when.                   |
 
-### **Remediation Plan (Optional)**
+#### **Remediation Plan (Optional)**
 
 | Component                | Purpose                                 |
 | ------------------------ | --------------------------------------- |
@@ -110,7 +110,7 @@
 **Remember:** Engagement = Overview. Operations = Preparation. Mission = Execution. Remediation = Reporting and fixing issues.
 
 
-#### ----------------------------------- Concept of Operations -----------------------------------
+### --------------------------------- Concept of Operations -----------------------------------
 
 **CONOPS (Concept of Operations):** A high-level, semi-technical overview of how the Red Team will conduct the engagement. Written so even non-technical clients can understand it.
 
@@ -127,7 +127,7 @@
 | Threat Group        | APT/group to imitate, if any    |
 
 
-#### ----------------------------------- Resource Plan -----------------------------------
+### --------------------------------- Resource Plan -----------------------------------
 
 **Resource Plan:** Extends CONOPS with specific dates, required knowledge, and resources needed for the engagement.
 
@@ -143,7 +143,7 @@
 **Remember:** CONOPS = Overall overview. Resource Plan = What resources, skills, and dates are needed.
 
 
-#### ----------------------------------- Operations Plan -----------------------------------
+### --------------------------------- Operations Plan -----------------------------------
 
 **Operations Plan:** Expands CONOPS with specific engagement details and planned actions.
 
@@ -169,7 +169,7 @@ Slack
 **Remember:** Operations Plan = Who will do what, which attacks will be used, when to stop, and how everyone communicates.
 
 
-#### ----------------------------------- Mission Plan -----------------------------------
+### --------------------------------- Mission Plan -----------------------------------
 
 **Mission Plan:** Cell-specific document that assigns exact actions to Red Team operators.
 
@@ -190,7 +190,7 @@ Operations Plan = Business/client perspective (overall operations).
 Mission Plan = Operator perspective (exact actions to perform).
 
 
-#### ----------------------------------- Mission Plan -----------------------------------
+### --------------------------------- Mission Plan -----------------------------------
 
 **Mission Plan:** Cell-specific document that assigns exact actions to Red Team operators.
 
@@ -215,7 +215,7 @@ Mission Plan = Operator perspective (exact actions to perform).
 
 ## Red Team Threat Intel
 
-#### ----------------------------------- What is Threat Intelligence -----------------------------------
+### --------------------------------- What is Threat Intelligence -----------------------------------
 
 **Threat Intelligence (CTI):** Collecting and analyzing information about attackers to understand their activities and techniques.
 
@@ -224,7 +224,7 @@ Mission Plan = Operator perspective (exact actions to perform).
 **ISAC:** Information Sharing and Analysis Center – shares threat intelligence like IOCs and TTPs.
 
 
-#### ----------------------------------- Applying Threat Intel to the Red Team -----------------------------------
+### --------------------------------- Applying Threat Intel to the Red Team -----------------------------------
 
 **Red Team uses CTI:** To study real attackers and imitate their behavior during adversary emulation.
 
@@ -243,7 +243,7 @@ Mission Plan = Operator perspective (exact actions to perform).
 **Remember:** Red Team uses CTI, IOCs, and TTPs to plan and perform realistic adversary emulation.
 
 
-#### ----------------------------------- The TIBER-EU Framework -----------------------------------
+### --------------------------------- The TIBER-EU Framework -----------------------------------
 
 **TIBER-EU:** Threat Intelligence-Based Ethical Red Teaming. A framework developed by the European Central Bank (ECB).
 
@@ -260,7 +260,7 @@ Mission Plan = Operator perspective (exact actions to perform).
 [CREST TIBER-EU](https://www.crest-approved.org/membership/tiber-eu/?utm_source=chatgpt.com)
 
 
-#### ----------------------------------- TTP Mapping -----------------------------------
+### --------------------------------- TTP Mapping -----------------------------------
 
 **TTP Mapping:** Mapping an attacker's techniques to a standard Cyber Kill Chain to plan realistic adversary emulation.
 
@@ -301,7 +301,7 @@ Mandiant Advantage, Ontic, CrowdStrike Falcon.
 **Remember:** Select APT → Collect its TTPs → Use MITRE ATT&CK Navigator → Map TTPs to the Cyber Kill Chain → Plan adversary emulation.
 
 
-#### ----------------------------------- Other Red Team Applications of CTI -----------------------------------
+### --------------------------------- Other Red Team Applications of CTI -----------------------------------
 
 **CTI During Engagement:** Red Team uses CTI to imitate an attacker's actual behavior, not just their TTPs.
 
@@ -326,7 +326,7 @@ Analyze: Traffic, System calls (syscalls), API calls, Dropper behavior, File sig
 
 ## Red Team OPSEC
 
-#### ----------------------------------- Introduction -----------------------------------
+### --------------------------------- Introduction -----------------------------------
 
 **OPSEC (Operations Security):** A process of protecting information about Red Team activities so adversaries (Blue Team and third parties) cannot discover their capabilities and intentions.
 
@@ -356,7 +356,7 @@ Analyze: Traffic, System calls (syscalls), API calls, Dropper behavior, File sig
 [MITRE ATT&CK](https://attack.mitre.org/?utm_source=chatgpt.com)
 
 
-#### ----------------------------------- Critical Information Identification -----------------------------------
+### --------------------------------- Critical Information Identification -----------------------------------
 
 **Critical Information:** Any information that, if discovered by the Blue Team, could weaken or expose the Red Team's operation.
 
@@ -377,7 +377,7 @@ Analyze: Traffic, System calls (syscalls), API calls, Dropper behavior, File sig
 **Remember:** Critical Information = Anything that could help the Blue Team discover, prepare for, or stop your operation.
 
 
-#### ----------------------------------- Threat Analysis -----------------------------------
+### --------------------------------- Threat Analysis -----------------------------------
 
 **Threat Analysis:** Identifying potential adversaries, their intentions, and capabilities.
 
@@ -406,7 +406,7 @@ Threat = Adversary + Intent + Capability
 **Reference:** [DoD OPSEC Program Manual (PDF)](https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodm/520502m.pdf?utm_source=chatgpt.com)
 
 
-#### ----------------------------------- Vulnerability Analysis -----------------------------------
+### --------------------------------- Vulnerability Analysis -----------------------------------
 
 **OPSEC Vulnerability:** A weakness that allows an adversary to discover critical information, analyse it, and disrupt your operation.
 
@@ -421,7 +421,7 @@ Threat = Adversary + Intent + Capability
 **Remember:** OPSEC Vulnerability = A weakness that exposes your critical information and allows adversaries to disrupt your operation.
 
 
-#### ----------------------------------- Risk Assessment -----------------------------------
+### --------------------------------- Risk Assessment -----------------------------------
 
 **Risk Assessment:** Evaluating the possibility of an OPSEC vulnerability being exploited and its expected impact/cost.
 
@@ -450,7 +450,7 @@ Malicious bots continuously scan random public IPs. An unsecured database can ev
 **Remember:** Risk Assessment = How likely a vulnerability is to be exploited + How much damage it can cause.
 
 
-#### ----------------------------------- Countermeasures -----------------------------------
+### --------------------------------- Countermeasures -----------------------------------
 
 **Countermeasures:** Actions taken to protect critical information and reduce OPSEC risks.
 
@@ -477,7 +477,7 @@ Identify → Analyse Threats → Analyse Vulnerabilities → Assess Risks → Ap
 
 ## Intro to C2
 
-#### ----------------------------------- Command and Control Framework Structure -----------------------------------
+### --------------------------------- Command and Control Framework Structure -----------------------------------
 
 **C2 Framework:** A system that allows an operator to control multiple compromised machines through a central server. Its biggest advantage over Netcat is its advanced post-exploitation features.
 
@@ -486,7 +486,7 @@ Identify → Analyse Threats → Analyse Vulnerabilities → Assess Risks → Ap
 <img width="791" height="672" alt="image" src="https://github.com/user-attachments/assets/77c09a1a-5efe-4d2f-a4b6-4c82d018f6fe" />
 
 
-### **Main Components**
+#### **Main Components**
 
 | Component                 | Meaning                                                                      |
 | ------------------------- | ---------------------------------------------------------------------------- |
@@ -498,7 +498,7 @@ Identify → Analyse Threats → Analyse Vulnerabilities → Assess Risks → Ap
 | Post-Exploitation Modules | Activities after initial compromise.                                         |
 | Pivoting Modules          | Help access restricted network segments through another compromised machine. |
 
-### **Beacon Obfuscation**
+#### **Beacon Obfuscation**
 
 **Sleep Timer:** Time an agent waits between callbacks.
 
@@ -512,7 +512,7 @@ Example:
 import randomsleep = 60jitter = random.randint(-30,30)sleep = sleep + jitter
 ```
 
-### **Payload Types**
+#### **Payload Types**
 
 | Type      | Meaning                                                                 |
 | --------- | ----------------------------------------------------------------------- |
@@ -531,7 +531,7 @@ Dropper executes → Calls C2 → Downloads Stage 2 → Loads into memory → St
 
 PE/EXE, PowerShell, HTA, JScript, VBA scripts, Microsoft Office Documents.
 
-### **Modules**
+#### **Modules**
 
 **Post-Exploitation:** Used for activities after initial access, e.g. SharpHound and LSASS credential analysis.
 
@@ -539,7 +539,7 @@ PE/EXE, PowerShell, HTA, JScript, VBA scripts, Microsoft Office Documents.
 
 <img width="961" height="521" alt="image" src="https://github.com/user-attachments/assets/e4b13754-63f1-4208-81e1-b725e1e746ff" />
 
-### **Facing the World**
+#### **Facing the World**
 
 **Domain Fronting:** Uses a trusted provider (e.g. Cloudflare) as a proxy so C2 traffic appears to communicate with a trusted infrastructure.
 
@@ -553,7 +553,7 @@ Example: A custom HTTP header such as `X-C2-Server` helps the C2 server distingu
 
 **Redirectors:** Intermediate infrastructure that forwards traffic between agents and the C2 server.
 
-### **Important Terms to Remember**
+#### **Important Terms to Remember**
 
 | Term            | Remember                                               |
 | --------------- | ------------------------------------------------------ |
@@ -573,11 +573,11 @@ Example: A custom HTTP header such as `X-C2-Server` helps the C2 server distingu
 **Remember:** C2 Server = Control center, Agent = Controlled machine, Listener = Waiting for connections, Beacon = Callback, Modules = Extra capabilities.
 
 
-#### ----------------------------------- Common C2 Frameworks -----------------------------------
+### --------------------------------- Common C2 Frameworks -----------------------------------
 
 ## **Common C2 Frameworks**
 
-### **Free C2 Frameworks**
+#### **Free C2 Frameworks**
 
 | Framework                          | Key points                                                                                                                                                        |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -587,14 +587,14 @@ Example: A custom HTTP header such as `X-C2-Server` helps the C2 server distingu
 | **Covenant**                       | Written in C#. Focuses on post-exploitation and lateral movement. Supports HTTP, HTTPS and SMB listeners with customizable agents.                                |
 | **Sliver**                         | Developed by Bishop Fox; written in Go. Multi-user, customizable CLI-based C2. Supports WireGuard, mTLS, HTTP(S), DNS and BOF files.                              |
 
-### **Paid C2 Frameworks**
+#### **Paid C2 Frameworks**
 
 | Framework            | Key points                                                                                                                                  |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Cobalt Strike**    | Originally created by Raphael Mudge. Java-based C2 for Red Team operations. Supports advanced features, including VPN tunnels from beacons. |
 | **Brute Ratel (C4)** | Created by Chetan Nayak (Paranoid Ninja). Customizable Command and Control Center for adversary simulation.                                 |
 
-### **Important Concepts**
+#### **Important Concepts**
 
 - **Paid C2:** Often offers advanced post-exploitation, pivoting and custom features. May be harder for AV to detect, but is not undetectable.
 - **Open-source C2:** Generally better understood, making signature-based detection easier to develop.
@@ -614,7 +614,7 @@ Example: A custom HTTP header such as `X-C2-Server` helps the C2 server distingu
 **Remember:** Free = Metasploit, Armitage, Empire/Starkiller, Covenant, Sliver. Paid = Cobalt Strike, Brute Ratel.
 
 
-#### ----------------------------------- Setting Up a C2 Framework -----------------------------------
+### --------------------------------- Setting Up a C2 Framework -----------------------------------
 
 **Build:**
 
@@ -665,7 +665,7 @@ export MSF_DATABASE_CONFIG=/root/.msf4/database.yml
 **Remember:** PostgreSQL + Metasploit DB are required. `teamserver` starts the server; `armitage` connects the client.
 
 
-#### ----------------------------------- C2 Operation Basics -----------------------------------
+### --------------------------------- C2 Operation Basics -----------------------------------
 
 #### **C2 Operation Basics**
 
@@ -726,7 +726,7 @@ Metasploit supports TCP/UDP, HTTP/HTTPS, and SMB named pipes. DNS C2 may require
 
 [TASK 6 - LABS](https://medium.com/@DaRkrAi69/intro-to-c2-c66fe9e9b083)
 
-#### ----------------------------------- Advanced C2 Setups -----------------------------------
+### --------------------------------- Advanced C2 Setups -----------------------------------
 
 **Problem with Metasploit:** Limited C2 features. No configurable beacon interval or jitter, making traffic easy to detect by NGFW.
 
@@ -849,3 +849,375 @@ run
 Use multiple redirectors and DNS records in real engagements instead of relying on IP addresses alone.
 
 
+## Red Team Recon
+
+### --------------------------------- Built-in Tools -----------------------------------
+
+whois, dig, nslookup, host, traceroute
+
+### --------------------------------- Advanced Searching -----------------------------------
+
+Google Dorking , Google Hacking Database, Social Media Osint, Job Ads OSINT, Wayback Machine
+
+**Useful Links**
+[Google Advanced Search](https://www.google.com/advanced_search?utm_source=chatgpt.com), [Google Search Operators](https://support.google.com/websearch/answer/2466433?utm_source=chatgpt.com), [DuckDuckGo Syntax](https://help.duckduckgo.com/duckduckgo-help-pages/results/syntax/?utm_source=chatgpt.com), [Bing Advanced Search](https://help.bing.microsoft.com/apex/index/18/en-US/10002?utm_source=chatgpt.com)
+
+
+### --------------------------------- Specialized Search Engines -----------------------------------
+
+#### **Specialized Search Engines**
+
+| Tool                                                                                           | Purpose                                           |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| [ViewDNS](https://viewdns.info/?utm_source=chatgpt.com)                                        | Reverse IP Lookup: find domains sharing an IP.    |
+| [Threat Intelligence Platform](https://threatintelligenceplatform.com/?utm_source=chatgpt.com) | WHOIS, DNS, malware checks, NS records.           |
+| [Censys](https://search.censys.io?utm_source=chatgpt.com)                                      | Find IP/domain information, open ports, services. |
+| [Shodan](https://www.shodan.io/?utm_source=chatgpt.com)                                        | Find exposed devices, services and open ports.    |
+
+#### **Important Concepts**
+
+**WHOIS History:** Shows previous domain registration information.
+
+**Reverse IP Lookup:** Finds multiple domains hosted on the same IP (Shared Hosting).
+
+**Censys:** Helps identify whether an IP belongs to your target or a third party (e.g., Cloudflare).
+
+#### **Shodan CLI**
+
+```
+shodan init API_KEY
+shodan host IP_ADDRESS
+shodan myip
+```
+
+Links: [Shodan CLI](https://cli.shodan.io/?utm_source=chatgpt.com) | [Account Plans](https://account.shodan.io/billing?utm_source=chatgpt.com) | [THM Passive Recon](https://tryhackme.com/room/passiverecon?utm_source=chatgpt.com)
+
+**Remember:** Never scan third-party systems outside your authorized scope.
+
+
+### --------------------------------- Recon-ng -----------------------------------
+
+
+**Recon-ng:** OSINT automation framework. Collects domains, subdomains, hosts, emails, etc. Saves results in a workspace database.
+
+#### **Workflow**
+
+`Create Workspace → Insert Data → Search → Install → Load → Run`
+
+#### **Commands**
+
+```
+recon-ng
+recon-ng -w WORKSPACE_NAME
+```
+
+```
+recon-ng
+#osint framework
+
+workspaces create thmredteam
+#create new workspace for investigation
+
+db schema
+#check table names in database
+
+db insert domains
+#insert domain name into domains table
+#enter domain name on prompt
+
+marketplace search virustotal
+#search for modules containing 'virustotal'
+
+marketplace search
+#list of all modules
+
+marketplace search domains-
+
+marketplace info google_site_web
+#view info about module
+
+marketplace install google_site_web
+#installs module
+
+modules search
+#view all installed modules
+
+modules load viewdns_reverse_whois
+#load module
+
+options list
+#view options
+
+options set Name thmredteam.com
+#set option value
+
+run
+#run the module
+
+exit
+```
+
+#### **API Keys**
+
+Some modules need API keys (`K` = Key required). Dependencies (`D`) = Extra libraries needed.
+
+```
+keys list
+keys add KEY_NAME KEY_VALUE
+keys remove KEY_NAME
+```
+
+#### **Important**
+
+`CTRL + C` = Unload module.
+
+`info` = Module information.
+
+`options list` = Available settings.
+
+`options set NAME VALUE` = Set option.
+
+`run` = Execute module.
+
+**Remember:** Install → Load → Run. A module cannot run before installation and loading. Database data can be reused by other modules.
+
+
+### --------------------------------- Maltego -----------------------------------
+
+#### **Maltego**
+
+[Maltego](https://www.maltego.com/?utm_source=chatgpt.com) – OSINT tool that visually maps relationships between domains, IPs, people, emails, companies, etc.
+
+**Entity:** An item in the graph (e.g., domain, IP, email).
+
+**Transform:** Code/API query that takes an entity and finds related entities.
+
+#### **Example Workflow**
+
+`Domain → IP Address → DNS Names → IP Location`
+
+<img width="1162" height="422" alt="image" src="https://github.com/user-attachments/assets/e5f6079d-b179-4243-b4d7-06ff09d4373f" />
+
+1. Right-click domain → Standard Transforms → Resolve to IP → To IP Address (DNS).
+2. Right-click IP → DNS from IP → To DNS Name from passive DNS (Robtex).
+
+<img width="1162" height="422" alt="image" src="https://github.com/user-attachments/assets/4cbaff78-9503-457c-8167-eb25591691cf" />
+
+**Important:** Some transforms actively contact targets. Check before using if you want passive recon only.
+
+#### **More Information**
+
+`whois` and `nslookup` results can also be visualized in Maltego.
+
+[Transform Hub](https://www.maltego.com/transform-hub/?utm_source=chatgpt.com) – Find additional transforms.
+
+**Maltego CE:** Free Community Edition, but requires activation. Some transforms are paid.
+
+**Remember:** Maltego uses transforms to automatically discover and visualize relationships between entities.
+
+
+
+
+## Weaponization
+
+<img width="920" height="560" alt="image" src="https://github.com/user-attachments/assets/336285cb-7f64-475c-a97f-aec6fa5dd3f9" />
+
+### --------------------------------- Introduction -----------------------------------
+
+**Weaponization:** 2nd stage of Cyber Kill Chain. Attacker creates malicious payloads (PDF, Word, etc.) to gain initial access.
+
+**Purpose:** Deliver malicious code and connect back to the attacker's C2.
+
+**Delivery methods:** Phishing, social engineering, USB, browser/software exploits, web.
+
+**Why custom payloads?** Organizations often block `.exe` files.
+
+[Cyber Kill Chain](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html?utm_source=chatgpt.com) , [Red Teaming Toolkit](https://github.com/infosecn1nja/Red-Teaming-Toolkit?utm_source=chatgpt.com#Payload%20Development)
+
+
+### --------------------------------- Windows Scripting Host - WSH -----------------------------------
+
+**WSH:** Built-in Windows tool that runs scripts to automate tasks.
+
+**Engines:**\
+`wscript.exe` = GUI scripts\
+`cscript.exe` = Command-line scripts
+
+**VBScript:** Runs with the same permissions as the current user.
+
+[VBScript](https://en.wikipedia.org/wiki/VBScript?utm_source=chatgpt.com)
+
+##### **Basic VBScript**
+
+```
+Dim message 
+message = "Welcome to THM"
+MsgBox message
+```
+
+`Dim` = Create variable. `MsgBox` = Show message box.
+
+##### **Execute EXE using VBScript**
+
+```
+Set shell = WScript.CreateObject("Wscript.Shell")
+shell.Run("C:\Windows\System32\calc.exe " & WScript.ScriptFullName),0,True
+```
+
+`CreateObject` = Create WScript object. `Run` = Execute program.
+
+##### **Execute Scripts**
+
+```
+wscript C:\Users\thm\Desktop\payload.vbs
+cscript.exe C:\Users\thm\Desktop\payload.vbs
+```
+
+##### **Run VBScript with .txt Extension**
+
+```
+wscript /e:VBScript C:\Users\thm\Desktop\payload.txt
+```
+
+`/e:VBScript` = Specify the script engine.
+
+**Remember:** WSH runs `.vbs` scripts using `wscript.exe` or `cscript.exe`.
+
+
+### --------------------------------- An HTML Application - HTA -----------------------------------
+
+**HTA:** HTML file containing HTML, JScript or VBScript. Can execute Windows commands using `mshta.exe` (LOLBIN).
+
+**ActiveXObject:** Allows interaction with Windows components.
+
+#### **Basic HTA**
+
+```
+<html>
+<body>
+<script>
+	var c= 'cmd.exe'
+	new ActiveXObject('WScript.Shell').Run(c);
+</script>
+</body>
+</html>
+```
+
+#### **Serve HTA**
+
+```
+python3 -m http.server 8090
+```
+
+URL: `http://10.8.232.37:8090/payload.hta`
+
+#### **Important Concepts**
+
+**HTA Reverse Shell:** Uses `msfvenom` to generate an HTA payload.
+
+**Metasploit HTA Module:** `exploit/windows/misc/hta_server`
+
+**Remember:** HTA files can execute Windows commands and are launched using `mshta.exe`.
+
+[ActiveXObject](https://en.wikipedia.org/wiki/ActiveX?utm_source=chatgpt.com)
+
+
+### --------------------------------- Visual Basic for Application - VBA -----------------------------------
+
+**VBA:** Microsoft Office scripting language (Word, Excel, PowerPoint). Used to automate tasks through Macros.
+
+**Macro:** Office document containing VBA code.
+
+[Windows API](https://en.wikipedia.org/wiki/Windows_API?utm_source=chatgpt.com) | [VBA](https://en.wikipedia.org/wiki/Visual_Basic_for_Applications?utm_source=chatgpt.com)
+
+#### **Basic Macro**
+
+```
+Sub THM()
+  MsgBox ("Welcome to Weaponization Room!")
+End Sub
+```
+
+Run: `F5`
+
+#### **Auto-execution**
+
+`AutoOpen()` and `Document_Open()` execute macros when a Word document opens.
+
+```
+Sub Document_Open()
+  THM
+End Sub
+
+Sub AutoOpen()
+  THM
+End Sub
+
+Sub THM()
+   MsgBox ("Welcome to Weaponization Room!")
+End Sub
+```
+
+**Macro-enabled formats:** `.doc`, `.docm`
+
+#### **Important Concepts**
+
+**Execute EXE:** VBA can use WSH (`Wscript.Shell`) to run programs.
+
+**Security:** User may need to click **Enable Content**. Macros alone don't bypass detection.
+
+**Combining:** VBA + WSH + HTA.
+
+**Remember:** `Workbook_Open()` = Excel; `Document_Open()` = Word.
+
+
+### --------------------------------- PowerShell - PSH -----------------------------------
+
+**PowerShell:** Windows scripting language used for automation, system enumeration and administration.
+
+[THM PowerShell Room](https://tryhackme.com/room/powershell?utm_source=chatgpt.com)
+
+#### **Basic Script**
+
+```
+Write-Output "Welcome to the Weaponization Room!"
+```
+
+Run:
+
+```
+powershell -File thm.ps1
+```
+
+#### **Execution Policy**
+
+Default: `Restricted` = Scripts cannot run.
+
+```
+Get-ExecutionPolicy
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+**Bypass:**
+
+```
+powershell -ex bypass -File thm.ps1
+```
+
+#### **Powercat**
+
+[Powercat GitHub](https://github.com/besimorhino/powercat?utm_source=chatgpt.com) – PowerShell networking tool.
+
+**Remember:** PowerShell scripts use `.ps1`; Execution Policy controls script execution.
+
+
+
+## Password Attacks
+
+### --------------------------------- Maltego -----------------------------------
+
+
+
+### --------------------------------- Maltego -----------------------------------
+### --------------------------------- Maltego -----------------------------------
+### --------------------------------- Maltego -----------------------------------
