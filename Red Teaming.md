@@ -1,4 +1,4 @@
-<img width="920" height="560" alt="image" src="https://github.com/user-attachments/assets/fc291bef-fc05-4d4d-8647-56e4930f23de" /># Red Team Fundamentals
+# Red Team Fundamentals
 
 ## Red Team Engagements
 
@@ -475,6 +475,100 @@ Identify → Analyse Threats → Analyse Vulnerabilities → Assess Risks → Ap
 
 
 
+## Intro to C2
+
+#### ----------------------------------- Command and Control Framework Structure -----------------------------------
+
+**C2 Framework:** A system that allows an operator to control multiple compromised machines through a central server. Its biggest advantage over Netcat is its advanced post-exploitation features.
+
+<img width="632" height="481" alt="image" src="https://github.com/user-attachments/assets/5dcb2718-264d-45f9-81ed-b45c41075f63" />
+
+<img width="791" height="672" alt="image" src="https://github.com/user-attachments/assets/77c09a1a-5efe-4d2f-a4b6-4c82d018f6fe" />
 
 
+### **Main Components**
+
+| Component                 | Meaning                                                                      |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| C2 Server                 | Central server that receives agent connections and sends commands.           |
+| Agent/Payload             | Program running on the compromised machine that connects to C2.              |
+| Listener                  | Waits for agent connections on a port/protocol (HTTP, HTTPS, DNS).           |
+| Beacon                    | Agent's callback to the C2 server.                                           |
+| Modules                   | Add extra functionality to the C2 framework.                                 |
+| Post-Exploitation Modules | Activities after initial compromise.                                         |
+| Pivoting Modules          | Help access restricted network segments through another compromised machine. |
+
+### **Beacon Obfuscation**
+
+**Sleep Timer:** Time an agent waits between callbacks.
+
+Example: Beacon every 5 seconds = 5-second sleep timer.
+
+**Jitter:** Adds random variation to the sleep timer to avoid predictable callback patterns.
+
+Example:
+
+```
+import randomsleep = 60jitter = random.randint(-30,30)sleep = sleep + jitter
+```
+
+### **Payload Types**
+
+| Type      | Meaning                                                                 |
+| --------- | ----------------------------------------------------------------------- |
+| Stageless | Contains the complete agent. Executes and starts beaconing immediately. |
+| Staged    | Small dropper downloads the remaining agent (Stage 2) from C2.          |
+
+<img width="632" height="201" alt="image" src="https://github.com/user-attachments/assets/de93a779-c5f1-4770-a31b-588b1a994e4b" />
+
+**Staged Payload Flow:**
+
+Dropper executes → Calls C2 → Downloads Stage 2 → Loads into memory → Starts beaconing.
+
+<img width="932" height="425" alt="image" src="https://github.com/user-attachments/assets/6c218b1c-5eab-44a6-b24d-b57bd4c854be" />
+
+**Payload Formats:**
+
+PE/EXE, PowerShell, HTA, JScript, VBA scripts, Microsoft Office Documents.
+
+### **Modules**
+
+**Post-Exploitation:** Used for activities after initial access, e.g. SharpHound and LSASS credential analysis.
+
+**Pivoting:** Allows restricted machines to communicate through another compromised machine, e.g. SMB Beacon using an SMB named pipe.
+
+<img width="961" height="521" alt="image" src="https://github.com/user-attachments/assets/e4b13754-63f1-4208-81e1-b725e1e746ff" />
+
+### **Facing the World**
+
+**Domain Fronting:** Uses a trusted provider (e.g. Cloudflare) as a proxy so C2 traffic appears to communicate with a trusted infrastructure.
+
+<img width="864" height="534" alt="image" src="https://github.com/user-attachments/assets/ff3cfa97-2a24-4fcb-ab4e-293bd229a8da" />
+
+**C2 Profiles:** Control how HTTP requests and responses look and behave.
+
+<img width="1326" height="681" alt="image" src="https://github.com/user-attachments/assets/9b9eb6ec-f9c0-43dc-aa7a-cd2325f66b74" />
+
+Example: A custom HTTP header such as `X-C2-Server` helps the C2 server distinguish agent requests from normal browser requests.
+
+**Redirectors:** Intermediate infrastructure that forwards traffic between agents and the C2 server.
+
+### **Important Terms to Remember**
+
+| Term            | Remember                                               |
+| --------------- | ------------------------------------------------------ |
+| C2 Server       | Central control server                                 |
+| Agent           | Runs on compromised machine                            |
+| Listener        | Waits for connections                                  |
+| Beacon          | Agent callback                                         |
+| Sleep           | Delay between callbacks                                |
+| Jitter          | Random delay variation                                 |
+| Stageless       | Complete payload                                       |
+| Staged          | Downloads second stage                                 |
+| Modules         | Extra functionality                                    |
+| Pivoting        | Access restricted networks                             |
+| Domain Fronting | Hides actual destination behind trusted infrastructure |
+| C2 Profile      | Controls traffic appearance                            |
+
+**Remember:** C2 Server = Control center, Agent = Controlled machine, Listener = Waiting for connections, Beacon = Callback, Modules = Extra capabilities.
 
