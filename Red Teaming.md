@@ -215,3 +215,108 @@ Mission Plan = Operator perspective (exact actions to perform).
 
 ## Red Team Threat Intel
 
+#### ----------------------------------- What is Threat Intelligence -----------------------------------
+
+**Threat Intelligence (CTI):** Collecting and analyzing information about attackers to understand their activities and techniques.
+
+**IOC (Indicators of Compromise):** Traces left by attackers, such as IPs, domains, files, and strings.
+
+**ISAC:** Information Sharing and Analysis Center – shares threat intelligence like IOCs and TTPs.
+
+
+#### ----------------------------------- Applying Threat Intel to the Red Team -----------------------------------
+
+**Red Team uses CTI:** To study real attackers and imitate their behavior during adversary emulation.
+
+**Main Frameworks:**
+
+| Framework    | Purpose                                      |
+| ------------ | -------------------------------------------- |
+| MITRE ATT&CK | Collects and categorizes known TTPs          |
+| TIBER-EU     | Framework for threat-led penetration testing |
+| OST Map      | Threat intelligence mapping framework        |
+
+**TTPs are categorized by:** Threat Group, Kill Chain Phase, Tactic, and Objective/Goal.
+
+**Process:** Select a target APT → Collect its TTPs → Map them to the Cyber Kill Chain → Build tools and modify attack behavior to imitate that APT.
+
+**Remember:** Red Team uses CTI, IOCs, and TTPs to plan and perform realistic adversary emulation.
+
+
+#### ----------------------------------- The TIBER-EU Framework -----------------------------------
+
+**TIBER-EU:** Threat Intelligence-Based Ethical Red Teaming. A framework developed by the European Central Bank (ECB).
+
+**Purpose:** Helps financial institutions test and improve their security against sophisticated cyberattacks using threat intelligence.
+
+**Key Difference:** Its Testing phase uses threat intelligence to guide Red Team attacks.
+
+**Remember:** TIBER-EU = A best-practice framework that uses real-world threat intelligence to make Red Team testing realistic.
+
+**References:**
+
+[ECB TIBER-EU White Paper (PDF)](https://www.ecb.europa.eu/pub/pdf/other/ecb.tiber_eu_framework.en.pdf?utm_source=chatgpt.com)
+
+[CREST TIBER-EU](https://www.crest-approved.org/membership/tiber-eu/?utm_source=chatgpt.com)
+
+
+#### ----------------------------------- TTP Mapping -----------------------------------
+
+**TTP Mapping:** Mapping an attacker's techniques to a standard Cyber Kill Chain to plan realistic adversary emulation.
+
+**Target APT Selection:** Based on target industry, attack vectors, country of origin, and other factors.
+
+**Example:** APT39 (Iranian cyber-espionage group).
+
+**MITRE ATT&CK:** Provides IDs and descriptions of an attacker's known TTPs.
+
+**ATT&CK Navigator:** Visualizes an APT group's TTPs and helps map them to the Kill Chain.
+
+**APT39 TTP Mapping:**
+
+| Kill Chain Phase      | TTPs                                                                   |
+| --------------------- | ---------------------------------------------------------------------- |
+| Reconnaissance        | Internal team methodology                                              |
+| Weaponization         | PowerShell, Python, VBA, malicious attachments                         |
+| Delivery              | Public-facing application exploits, spearphishing                      |
+| Exploitation          | Registry modification, scheduled tasks, keylogging, credential dumping |
+| Installation          | Ingress tool transfer, proxy usage                                     |
+| Command & Control     | HTTP/HTTPS, DNS                                                        |
+| Actions on Objectives | Exfiltration over C2                                                   |
+
+**Other TTP Platforms:**
+
+[MITRE ATT&CK](https://attack.mitre.org/?utm_source=chatgpt.com)
+
+[ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/?utm_source=chatgpt.com)
+
+[APT39 Profile](https://attack.mitre.org/groups/G0087/?utm_source=chatgpt.com)
+
+[TryHackMe MITRE Room](https://tryhackme.com/room/mitre?utm_source=chatgpt.com)
+
+[OST Map](https://github.com/intezer/ost-map?utm_source=chatgpt.com)
+
+Mandiant Advantage, Ontic, CrowdStrike Falcon.
+
+**Remember:** Select APT → Collect its TTPs → Use MITRE ATT&CK Navigator → Map TTPs to the Cyber Kill Chain → Plan adversary emulation.
+
+
+#### ----------------------------------- Other Red Team Applications of CTI -----------------------------------
+
+**CTI During Engagement:** Red Team uses CTI to imitate an attacker's actual behavior, not just their TTPs.
+
+**Two Main Uses:**
+
+**1. C2 Traffic Manipulation:** Make Command & Control traffic look like the targeted APT's traffic.
+
+Important details: User-Agent, Ports, Protocols, Listener Profiles, Host Headers, POST URIs, Server Responses and Headers.
+
+**Malleable C2 Profile:** Controls how C2 listener traffic looks and behaves.
+
+[ Cobalt Strike Malleable C2](https://www.cobaltstrike.com/help-malleable-c2?utm_source=chatgpt.com)
+
+**2. Malware & Tooling Emulation:** Study an attacker's malware and create tools with similar behavior.
+
+Analyze: Traffic, System calls (syscalls), API calls, Dropper behavior, File signatures and IOCs.
+
+**Remember:** CTI helps Red Team imitate both the attacker's network traffic and malware behavior to make adversary emulation realistic.
