@@ -1,4 +1,4 @@
-# Red Team Fundamentals
+<img width="920" height="560" alt="image" src="https://github.com/user-attachments/assets/fc291bef-fc05-4d4d-8647-56e4930f23de" /># Red Team Fundamentals
 
 ## Red Team Engagements
 
@@ -320,3 +320,161 @@ Important details: User-Agent, Ports, Protocols, Listener Profiles, Host Headers
 Analyze: Traffic, System calls (syscalls), API calls, Dropper behavior, File signatures and IOCs.
 
 **Remember:** CTI helps Red Team imitate both the attacker's network traffic and malware behavior to make adversary emulation realistic.
+
+
+
+
+## Red Team OPSEC
+
+#### ----------------------------------- Introduction -----------------------------------
+
+**OPSEC (Operations Security):** A process of protecting information about Red Team activities so adversaries (Blue Team and third parties) cannot discover their capabilities and intentions.
+
+<img width="920" height="560" alt="image" src="https://github.com/user-attachments/assets/eb275ff0-8fac-4436-9744-3766de520ba1" />
+
+**Purpose:** Prevent the Blue Team from connecting activities and identifying the Red Team.
+
+**Five OPSEC Steps:**
+
+1. Identify critical information.
+2. Analyse threats.
+3. Analyse vulnerabilities.
+4. Assess risks.
+5. Apply appropriate countermeasures.
+
+<img width="920" height="300" alt="image" src="https://github.com/user-attachments/assets/606fe627-0f64-4e2e-9cc5-957baaf6b7e7" />
+
+
+**Example:** If you scan a target using your IP and host a phishing site using the same IP, the Blue Team can connect both activities and identify you.
+
+**Frameworks:**
+
+[ NIST OPSEC Definition](https://csrc.nist.gov/glossary/term/opsec?utm_source=chatgpt.com)
+
+[Lockheed Martin Cyber Kill Chain](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html?utm_source=chatgpt.com)
+
+[MITRE ATT&CK](https://attack.mitre.org/?utm_source=chatgpt.com)
+
+
+#### ----------------------------------- Critical Information Identification -----------------------------------
+
+**Critical Information:** Any information that, if discovered by the Blue Team, could weaken or expose the Red Team's operation.
+
+**Examples:**
+
+1. **Client Information:** Employee names, roles, and infrastructure.
+2. **Red Team Information:** Identities, activities, plans, capabilities, limitations.
+3. **TTPs:** Techniques used to imitate attackers.
+4. **Tools & Environment:** OS, cloud provider, C2 framework (e.g., Pentoo).
+5. **Public IP Addresses:** Blue Team could block them.
+6. **Domain Names:** Blue Team could block or sinkhole them.
+7. **Hosted Websites:** Phishing websites used during emulation.
+
+**PoLP (Principle of Least Privilege):** Everyone should access only the information necessary for their job.
+
+**Reference:** [Pentoo](https://pentoo.github.io/?utm_source=chatgpt.com)
+
+**Remember:** Critical Information = Anything that could help the Blue Team discover, prepare for, or stop your operation.
+
+
+#### ----------------------------------- Threat Analysis -----------------------------------
+
+**Threat Analysis:** Identifying potential adversaries, their intentions, and capabilities.
+
+**Four Questions:**
+
+1. Who is the adversary?
+2. What are their goals?
+3. What TTPs do they use?
+4. What critical information have they obtained?
+
+**Potential Adversaries:**
+
+| Adversary             | Intention          | Capability       |
+| --------------------- | ------------------ | ---------------- |
+| Blue Team             | Keep intruders out | Not always known |
+| Malicious third party | Varies             | Varies           |
+
+**Threat Formula:**
+
+```
+Threat = Adversary + Intent + Capability
+```
+
+**Remember:** Someone is a threat only if they have both the intention and capability to prevent your operation from succeeding.
+
+**Reference:** [DoD OPSEC Program Manual (PDF)](https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodm/520502m.pdf?utm_source=chatgpt.com)
+
+
+#### ----------------------------------- Vulnerability Analysis -----------------------------------
+
+**OPSEC Vulnerability:** A weakness that allows an adversary to discover critical information, analyse it, and disrupt your operation.
+
+**Examples:**
+
+1\. **Same IP Address:** Using one IP for Nmap, phishing, and Metasploit. If Blue Team blocks that IP, all activities fail.
+
+2\. **Unsecured Database:** Attackers may steal phishing victim credentials and compromise the client's network.
+
+3\. **Social Media Leak:** Revealing the client's name can help Blue Team prepare for the Red Team's activities.
+
+**Remember:** OPSEC Vulnerability = A weakness that exposes your critical information and allows adversaries to disrupt your operation.
+
+
+#### ----------------------------------- Risk Assessment -----------------------------------
+
+**Risk Assessment:** Evaluating the possibility of an OPSEC vulnerability being exploited and its expected impact/cost.
+
+**Three Factors for Countermeasures:**
+
+1. How effectively will it reduce risk?
+2. Is its cost reasonable compared to the potential damage?
+3. Could the countermeasure reveal information to the adversary?
+
+**Examples:**
+
+**Same IP for Nmap, Metasploit & Phishing:**
+
+SIEM available → Easier to detect and connect activities → High risk.
+
+Weak monitoring → Harder to detect → Low risk.
+
+**Unsecured Database:**
+
+Malicious bots continuously scan random public IPs. An unsecured database can eventually be discovered and compromised.
+
+**SIEM:** Security Information and Event Management – Monitors and analyses security events from different sources in real time.
+
+**Reference:** [NIST Risk Assessment](https://csrc.nist.gov/glossary/term/risk_assessment?utm_source=chatgpt.com)
+
+**Remember:** Risk Assessment = How likely a vulnerability is to be exploited + How much damage it can cause.
+
+
+#### ----------------------------------- Countermeasures -----------------------------------
+
+**Countermeasures:** Actions taken to protect critical information and reduce OPSEC risks.
+
+**Examples:**
+
+1. **Separate IPs:** Use different public IPs for scanning, phishing, and exploitation.
+2. **Rename VMs/Hosts:** Use names that blend with the client's environment.
+3. **User-Agent:** Use a common User-Agent instead of default tool values.
+4. **Secure Database:** Allow access only to authorized personnel.
+5. **Client Privacy:** Never expose client names on public channels.
+
+**Three Purposes of Countermeasures:**
+
+Prevent adversaries from detecting critical information, provide alternative interpretations (deception), or block adversary information collection.
+
+**Reference:** [DoD OPSEC Program Manual (PDF)](https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodm/520502m.pdf?utm_source=chatgpt.com)
+
+**Remember – Five OPSEC Steps:**
+
+Identify → Analyse Threats → Analyse Vulnerabilities → Assess Risks → Apply Countermeasures.
+
+
+
+
+
+
+
