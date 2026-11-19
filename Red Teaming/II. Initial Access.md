@@ -688,7 +688,174 @@ python3 RDPassSpray.py -U usernames-list.txt -p 'Spring2021!' -d DOMAIN -T RDP_s
 
 ## Phishing
 
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
+### --------------------------------- Intro To Phishing Attacks -----------------------------------
+
+#### **Social Engineering**
+
+- Manipulating people psychologically to reveal information or perform actions.
+- Exploits human emotions: curiosity, greed, kindness, etc.
+
+#### **Phishing**
+
+- Social engineering through **email**.
+- Tricks victims into revealing credentials, sharing personal information, or running malicious code.
+- Uses fake trusted sources, links, and attachments.
+
+#### **Types of Phishing**
+
+- **Spear-phishing:** Targets a specific person or organization.
+- **Smishing:** Phishing through SMS.
+- **Vishing:** Phishing through phone calls.
+
+#### **Example Attack Flow**
+
+1. Find a target company.
+2. Discover a trusted local business.
+3. Register a similar-looking domain.
+4. Send an attractive fake offer through email.
+5. Victim visits the fake website and enters credentials.
+6. Attacker reuses stolen credentials to access company accounts.
+
+**Remember:** Spear-phishing is targeted, making it harder to detect than mass phishing.
+
+### --------------------------------- Writing Convincing Phishing Emails -----------------------------------
+
+#### **Phishing Email Components**
+
+Three main parts:
+
+1. **Sender Address:** Appears to come from a trusted brand, contact, or coworker.
+   - Use OSINT to understand the target's trusted contacts and brands.
+   - Sources: Social media, Google, company website, LinkedIn.
+2. **Subject:** Creates urgency, worry, or curiosity.
+   - Examples: Account compromised, package shipped, payroll information.
+3. **Content:** Matches the sender's normal email style.
+   - Logo, branding, signature, and writing style.
+
+#### **Anchor Text**
+
+- Text displayed for a hyperlink.
+- Can hide or disguise the actual destination URL.
+
+```
+<a href="http://spoofsite.thm">Click Here</a>
+
+<a href="http://spoofsite.thm">https://onlinebank.thm</a>
+```
+
+[Anchor Text](https://en.wikipedia.org/wiki/Anchor_text?utm_source=chatgpt.com)
+
+**Remember:** Sender + Subject + Content = Main phishing email components.
+
+
+### --------------------------------- Phishing Infrastructure -----------------------------------
+
+Required components:
+
+- **Domain Name:** Authentic-looking domain for the campaign.
+- **SSL/TLS:** Adds HTTPS encryption.
+- **Email Server:** Sends campaign emails using SMTP.
+- **DNS Records:** SPF, DKIM, DMARC help email delivery and authentication.
+- **Web Server:** Hosts campaign websites.
+- **Analytics:** Tracks sent, opened, clicked emails and user actions.
+
+#### **Useful Tools**
+
+\- **[GoPhish](https://getgophish.com/?utm_source=chatgpt.com):** Open-source phishing framework.
+
+- SMTP configuration
+- Email templates (WYSIWYG editor)
+- Email scheduling
+- Campaign analytics
+
+\- **[SET](https://www.trustedsec.com/tools/the-social-engineer-toolkit-set/?utm_source=chatgpt.com):** Social Engineering Toolkit.
+
+- Spear-phishing tools
+- Website simulation for security testing
+
+<img width="671" height="481" alt="image" src="https://github.com/user-attachments/assets/aefa9258-4473-4007-acd0-486e9ec7224c" />
+
+**Remember:** Domain + Email + DNS + Web Server + Analytics = Phishing infrastructure.
+
+
+### --------------------------------- Using GoPhish -----------------------------------
+
+{GoPhish Tutorial}
+
+### --------------------------------- Droppers -----------------------------------
+
+- A **dropper** is software that tricks victims into downloading and running it.
+- Disguised as legitimate software (e.g., video codec or file opener).
+- Often avoids antivirus detection because it isn't malicious itself.
+- Once executed, it installs or downloads the actual malware.
+- Malware connects back to attacker infrastructure.
+
+**Remember:** Dropper = Delivers and installs the actual malware.
+
+
+### --------------------------------- Choosing A Phishing Domain -----------------------------------
+
+\- **Expired Domains:** Older domains may have more trust with spam filters than brand-new domains.
+
+\- **Typosquatting:** Registering a domain similar to a legitimate domain.
+
+| Method              | Example             |
+| ------------------- | ------------------- |
+| Misspelling         | `goggle.com`        |
+| Extra period        | `go.ogle.com`       |
+| Number substitution | `g00gle.com`        |
+| Extra letters       | `googles.com`       |
+| Extra word          | `googleresults.com` |
+
+\- **TLD Alternatives:** Use a different domain extension.
+
+- Example: `tryhackme.co.uk` vs `tryhackme.com`
+
+\- **IDN Homograph Attack:** Uses characters from different languages that look identical.
+
+- Example:
+  - `U+0430` = Cyrillic `а`
+  - `U+0061` = Latin `a`
+
+<img width="804" height="405" alt="image" src="https://github.com/user-attachments/assets/103dfdb1-04f9-40bc-9601-63a05acc7dc9" />
+
+**Remember:** Phishing domains exploit visual similarity and human trust.
+
+### --------------------------------- Using MS Office In Phishing -----------------------------------
+
+#### **Using MS Office in Phishing**
+
+- Phishing emails often contain Word, Excel, or PowerPoint attachments.
+- Office documents can contain **macros**.
+- Macros have legitimate uses but can also:
+  - Execute system commands.
+  - Install malware.
+  - Connect to attacker infrastructure.
+  - Give attackers remote access.
+
+**Example Attack Flow:**
+
+1. Attacker spoofs an HR email address.
+2. Sends an attractive attachment, e.g. `Staff_Salaries.xlsx`.
+3. Victim opens the file and enables macros.
+4. Malicious macro executes and compromises the computer.
+
+**Remember:** Malicious Office macros can turn a document attachment into malware execution.
+
+### --------------------------------- Using Browser Exploits -----------------------------------
+
+- Exploit vulnerabilities in browsers (Chrome, Firefox, Edge, Safari, etc.).
+- Can allow attackers to execute remote commands on victims' computers.
+- Usually uncommon because modern browsers are frequently updated and difficult to exploit.
+- Older, unpatched browsers may remain vulnerable due to software compatibility issues.
+
+**Attack Flow:**
+
+1. Attacker sends a phishing email with a malicious website link.
+2. Victim visits the website.
+3. Browser vulnerability is exploited.
+4. Attacker may execute commands on the victim's computer.
+
+**Example:** [CVE-2021-40444](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-40444?utm_source=chatgpt.com)
+
+**Remember:** Browser exploit = Exploiting a browser vulnerability to compromise the victim's system.
