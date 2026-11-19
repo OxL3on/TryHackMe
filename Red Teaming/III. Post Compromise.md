@@ -521,11 +521,341 @@ ls -d thmredteam.com
 
 ## Enumeration
 
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
-### --------------------------------- Maltego -----------------------------------
+### --------------------------------- Linux Enumeration -----------------------------------
+
+#### **Linux Enumeration**
+
+Four main areas:
+
+1. System
+2. Users
+3. Networking
+4. Running Services
+
+#### **1. System Enumeration**
+
+**OS information:**
+
+```
+ls /etc/*-release
+cat /etc/os-release
+hostname
+```
+
+**Important files:**
+
+| File          | Information                   |
+| ------------- | ----------------------------- |
+| `/etc/passwd` | User accounts                 |
+| `/etc/group`  | Groups                        |
+| `/etc/shadow` | Password hashes (root access) |
+| `/var/mail/`  | User emails                   |
+
+```
+cat /etc/passwd
+cat /etc/group
+sudo cat /etc/shadow
+ls -lh /var/mail/
+```
+
+**Installed applications:**
+
+```
+ls -lh /usr/bin/
+ls -lh /sbin/
+rpm -qa       # RPM-based
+dpkg -l       # Debian-based
+```
+
+#### **2. User Enumeration**
+
+| Command   | Purpose                              |
+| --------- | ------------------------------------ |
+| `who`     | Currently logged-in users            |
+| `whoami`  | Current effective username           |
+| `w`       | Logged-in users and their activities |
+| `id`      | User/group IDs and memberships       |
+| `last`    | Previous login history               |
+| `sudo -l` | Commands allowed with sudo           |
+
+#### **3. Network Enumeration**
+
+**IP and interfaces:**
+
+```
+ip address show
+ip a s
+ifconfig -a
+```
+
+**DNS server:**
+
+```
+cat /etc/resolv.conf
+```
+
+**Netstat options:**
+
+| Option | Meaning              |
+| ------ | -------------------- |
+| `-a`   | All sockets          |
+| `-l`   | Listening sockets    |
+| `-n`   | Numeric addresses    |
+| `-t`   | TCP                  |
+| `-u`   | UDP                  |
+| `-x`   | UNIX sockets         |
+| `-p`   | PID and program name |
+
+**Listening TCP ports:**
+
+```
+sudo netstat -plt
+```
+
+**All TCP/UDP connections:**
+
+```
+sudo netstat -atupn
+```
+
+**List network connections:**
+
+```
+sudo lsof -i
+```
+
+**Check specific port:**
+
+```
+sudo lsof -i :25
+```
+
+#### **4. Running Services / Processes**
+
+**List all processes:**
+
+```
+ps -e
+ps -ef
+ps aux
+```
+
+**Process tree:**
+
+```
+ps axf
+```
+
+**Filter processes:**
+
+```
+ps -ef | grep peter
+```
+
+**Useful&#x20;**`ps`**&#x20;options:**
+
+| Option | Meaning              |
+| ------ | -------------------- |
+| `-e`   | All processes        |
+| `-f`   | Full format          |
+| `-j`   | Jobs format          |
+| `-l`   | Long format          |
+| `-u`   | User-oriented format |
+
+**Remember:**
+
+- `System` = OS, files, installed packages.
+- `Users` = Accounts, groups, login history, sudo.
+- `Networking` = IP, DNS, ports, connections.
+- `Running Services` = Processes and their activities.
+
+
+### --------------------------------- Windows Enumeration -----------------------------------
+
+#### **1. System Enumeration**
+
+| Command                                | Purpose                               |
+| -------------------------------------- | ------------------------------------- |
+| `systeminfo`                           | OS version, build, hotfixes, hardware |
+| `wmic qfe get Caption,Description`     | Installed Windows updates             |
+| `net start`                            | Running services                      |
+| `wmic product get name,version,vendor` | Installed applications                |
+
+#### **2. User Enumeration**
+
+| Command                         | Purpose                           |
+| ------------------------------- | --------------------------------- |
+| `whoami`                        | Current user                      |
+| `whoami /priv`                  | User privileges                   |
+| `whoami /groups`                | User's groups                     |
+| `net user`                      | All local users                   |
+| `net group`                     | Domain groups (Domain Controller) |
+| `net localgroup`                | Local groups                      |
+| `net localgroup administrators` | Local administrators              |
+| `net accounts`                  | Local password policy             |
+| `net accounts /domain`          | Domain password policy            |
+
+#### **3. Network Enumeration**
+
+| Command         | Purpose                                                |
+| --------------- | ------------------------------------------------------ |
+| `ipconfig`      | IP, subnet mask, gateway                               |
+| `ipconfig /all` | Full network configuration, including DNS              |
+| `netstat -abno` | Listening ports, active connections, binaries and PIDs |
+| `arp -a`        | Recently communicating LAN devices (IP and MAC)        |
+
+**Netstat options:**
+
+- `-a` — All listening ports and active connections.
+- `-b` — Executable using the connection.
+- `-n` — Numeric IP addresses and ports.
+- `-o` — Process ID (PID).
+
+**Important:** `netstat` checks connections locally without generating network scanning traffic. Port scanning may miss ports blocked by a firewall.
+
+#### **4. Lab Connection**
+
+```
+ssh user@MACHINE_IP
+```
+
+- Username: `user`
+- Password: `THM33$$88`
+
+**Remember:** Windows enumeration covers four areas: **System, Users, Networking, and Running Services.**
+
+
+### --------------------------------- DNS, SMB, and SNMP -----------------------------------
+
+#### **1. DNS Enumeration**
+
+- DNS records include A, AAAA, CNAME, TXT.
+- **Zone transfer (AXFR):** Attempts to copy all DNS records and discover hidden hosts.
+- It works only if the DNS server allows it.
+
+```
+dig -t AXFR DOMAIN_NAME @DNS_SERVER
+```
+
+- `-t AXFR` — Request zone transfer.
+- `@DNS_SERVER` — DNS server to query.
+
+Links:
+
+- [DNS in Detail](https://tryhackme.com/room/dnsindetail?utm_source=chatgpt.com)
+- [Passive Reconnaissance](https://tryhackme.com/room/passiverecon?utm_source=chatgpt.com)
+
+#### **2. SMB Enumeration**
+
+- SMB provides shared access to files and printers.
+- `net share` — Lists shared folders and their paths.
+
+```
+net share
+```
+
+Check for interesting shares containing sensitive files.
+
+#### **3. SNMP Enumeration**
+
+- SNMP collects information about network devices (servers, printers, etc.).
+- It may expose useful system and network information.
+- `snmpcheck` queries SNMP using a community string.
+
+**AttackBox:**
+
+```
+/opt/snmpcheck/snmpcheck.rb TARGET_IP -c COMMUNITY_STRING
+```
+
+If `snmp` library is missing:
+
+```
+sudo gem install snmp
+ruby /opt/snmpcheck/snmpcheck.rb TARGET_IP -c public | more
+```
+
+**Kali:**
+
+```
+snmpcheck -t TARGET_IP -c public
+```
+
+**Install manually:**
+
+```
+git clone https://gitlab.com/kalilinux/packages/snmpcheck.git
+cd snmpcheck/
+gem install snmp
+chmod +x snmpcheck-1.9.rb
+```
+
+**Remember:**
+
+- DNS → Discover hosts through DNS records.
+- SMB → Discover shared files and folders.
+- SNMP → Gather information about network devices.
+
+
+### --------------------------------- More Tools for Windows -----------------------------------
+
+#### **1. Sysinternals Suite**
+
+A collection of Windows GUI and command-line tools for system enumeration.
+
+| Tool             | Purpose                              |
+| ---------------- | ------------------------------------ |
+| Process Explorer | Processes, open files, registry keys |
+| Process Monitor  | Monitor files, processes, Registry   |
+| PsList           | Process information                  |
+| PsLoggedOn       | Logged-in users                      |
+
+- [Sysinternals Utilities](https://docs.microsoft.com/en-us/sysinternals/downloads/?utm_source=chatgpt.com)
+- [THM Sysinternals Room](https://tryhackme.com/room/btsysinternalssg?utm_source=chatgpt.com)
+
+#### **2. Process Hacker**
+
+GUI tool for detailed process and system monitoring.
+
+- Shows running processes and network connections.
+- Monitors CPU, memory, disk and network usage.
+- [Download](https://processhacker.sourceforge.io/?utm_source=chatgpt.com)
+
+#### **3. GhostPack Seatbelt**
+
+- C# tool for Windows system enumeration.
+- Part of the GhostPack collection.
+- No official precompiled binary; compile using Microsoft Visual Studio.
+
+[GitHub – Seatbelt](https://github.com/GhostPack/Seatbelt?utm_source=chatgpt.com)
+
+
+
+
+## Windows Privilege Escalation
+
+### [WPE](https://github.com/OxL3on/HackTheBox/tree/main/CPTS/Windows%20Privilege%20Escalation)
+
+
+
+
+## Windows Local Persistence
+
+### --------------------------------- Introduction -----------------------------------
+
+**Persistence** means creating another way to regain access to a compromised Windows host without exploiting it again.
+
+#### **Why Persistence?**
+
+- **Unstable exploits:** Exploitation may crash the vulnerable process, giving only one chance.
+- **Hard-to-repeat access:** Phishing or other initial access methods may be difficult to repeat.
+- **Blue team response:** Vulnerabilities may get patched after detection, removing the original access.
+
+**Important:** Reusing admin password hashes is risky because credentials can be changed. Other persistence methods can provide alternative access.
+
+**Remember:** Initial access gets you in; persistence helps you get back in.
+
+
 ### --------------------------------- Maltego -----------------------------------
 ### --------------------------------- Maltego -----------------------------------
 ### --------------------------------- Maltego -----------------------------------
